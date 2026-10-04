@@ -4,55 +4,40 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>דגמי הוראה ללומד עצמאי</title>
-<meta name="description" content="דמו לכנס הסגל האקדמי, אפקה: דגמי הוראה מפיילוט הלומד העצמאי בסיוע AI, בניית כרטיס דגם וצ׳קליסט לפתיחת שנה״ל תשפ״ז.">
+<meta name="description" content="דגמי הוראה מפיילוט הלומד העצמאי בסיוע AI באפקה: מה המרצים עשו בכיתה, ומה אפשר לקחת לקורס שלכם.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=Secular+One&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<script>
-  try { var t = localStorage.getItem('afeka-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
-</script>
 </head>
 <body>
 <a class="skip" href="#main">דילוג לתוכן</a>
 
-<div class="demo-bar" role="note">
-  <strong>דמו</strong>
-  <span>התוכן בדף מומצא לצורך הצגה בכנס. הכרטיסים האמיתיים ייבנו מהטופס שהמרצים ימלאו.</span>
-</div>
-
-<header class="site-header">
-  <div class="wrap header-row">
-    <a class="brand" href="#">
-      <img class="brand-logo" src="assets/center-logo.png" alt="" width="40" height="40" onerror="this.remove()">
-      <span class="brand-text">
-        <span class="brand-name">המרכז לקידום הוראה</span>
-        <span class="brand-sub">אפקה, המכללה האקדמית להנדסה</span>
-      </span>
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="#/">
+      <img class="brand-logo" src="assets/center-logo.png" alt="" width="36" height="36" onerror="this.remove()">
+      <span>המרכז לקידום הוראה <span class="brand-sub">· אפקה</span></span>
     </a>
-    <nav class="main-nav" aria-label="ניווט ראשי">
-      <a href="#models" data-nav="models">דגמי הוראה</a>
-      <a href="#build" data-nav="build">בניית כרטיס</a>
-      <a href="#checklist" data-nav="checklist">צ׳קליסט<span class="nav-long"> פתיחת שנה</span></a>
+    <nav aria-label="ניווט ראשי">
+      <a href="#/" data-nav="models">דגמי הוראה</a>
+      <a href="#/checklist" data-nav="checklist" class="nav-pill">צ׳קליסט לפתיחת שנה</a>
     </nav>
-    <button class="icon-btn theme-toggle" type="button" aria-label="מעבר למצב כהה" title="מצב בהיר / כהה">
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
-    </button>
   </div>
 </header>
 
-<main id="main" tabindex="-1">
-  <div id="view" class="view" aria-live="off"></div>
-</main>
+<main id="main" tabindex="-1"></main>
 
-<footer class="site-footer">
+<footer class="foot">
   <div class="wrap">
-    <p>תוצר של המרכז לקידום הוראה · פיילוט קידום מיומנות לומד עצמאי בסיוע כלי AI · כנס הסגל האקדמי, פתיחת שנה״ל תשפ״ז, 15.10.26</p>
+    <p>פיילוט קידום מיומנות לומד עצמאי בסיוע כלי AI, תשפ״ו · המרכז לקידום הוראה, אפקה · כנס הסגל האקדמי, 15.10.26</p>
   </div>
 </footer>
 
 <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
+<script src="data/models.js"></script>
+<script src="data/checklist.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
