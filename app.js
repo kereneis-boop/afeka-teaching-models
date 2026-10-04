@@ -3,11 +3,11 @@
 
   var MODELS = window.AFEKA_MODELS || [];
   var CHECKLIST = window.AFEKA_CHECKLIST || { groups: [] };
-  var CHECK_KEY = 'afeka-checklist-tashpaz-v1';
+  var ANS_KEY = 'afeka-readiness-v2';
 
   var main = document.getElementById('main');
   var announcer = document.getElementById('announcer');
-  var state = { field: '', homeScroll: 0, checked: new Set(readJSON(CHECK_KEY, [])) };
+  var state = { field: '', homeScroll: 0, answers: readJSON(ANS_KEY, {}) };
 
   var ICON_BACK = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>';
   var ICON_NEXT = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m6-6-6 6 6 6"/></svg>';
@@ -134,8 +134,8 @@
       '</div></section>' +
 
       '<section class="promo"><div class="wrap promo-row">' +
-        '<h2 class="blocks small"><span class="b1">מתכוננים לפתיחת השנה?</span><span class="b2">' + totalItems() + ' סעיפים, רשימה אחת.</span></h2>' +
-        '<a class="pill" href="#/checklist">לצ׳קליסט ' + ICON_NEXT + '</a>' +
+        '<h2 class="blocks small"><span class="b1">הקורס שלכם מוכן לסמסטר?</span><span class="b2">' + CHECKLIST.stages.length + ' שלבים, ' + totalItems() + ' שאלות.</span></h2>' +
+        '<a class="pill" href="#/checklist">לבדיקת המוכנות ' + ICON_NEXT + '</a>' +
       '</div></section>';
 
     main.querySelectorAll('.chip').forEach(function (b) {
@@ -240,64 +240,136 @@
     });
   }
 
-  /* ---------- checklist: one list ---------- */
-  function totalItems() { return CHECKLIST.groups.reduce(function (n, g) { return n + g.items.length; }, 0); }
-  function groupDone(g) { return g.items.filter(function (_, i) { return state.checked.has(g.id + ':' + i); }).length; }
+  /* ---------- readiness: stages in time, three answers per item ---------- */
+  var ANSWERS = [
+    { key: 'ready', label: 'מוכן' },
+    { key: 'doing', label: 'בעבודה' },
+    { key: 'na', label: 'לא רלוונטי' }
+  ];
+  function allItems() {
+    var out = [];
+    CHECKLIST.stages.forEach(function (s) { s.items.forEach(function (it) { out.push({ stage: s, item: it }); }); });
+    return out;
+  }
+  function totalItems() { return allItems().length; }
+  function isClosed(id) { var a = state.answers[id]; return a === 'ready' || a === 'na'; }
+  function stageClosed(s) { return s.items.filter(function (it) { return isClosed(it.id); }).length; }
+  function modelTitle(id) {
+    var t = '';
+    MODELS.forEach(function (m) { if (m.id === id) t = m.title; });
+    return t;
+  }
 
   function renderChecklist() {
     main.innerHTML =
-      '<div class="doc">' +
-        '<p class="kicker">לקראת פתיחת שנה״ל תשפ״ז</p>' +
+      '<div class="doc readiness">' +
+        '<p class="kicker">רשימת מוכנות למרצים · תשפ״ז</p>' +
         '<h1>' + txt(CHECKLIST.title) + '</h1>' +
-        '<p class="lead">' + txt(CHECKLIST.intro) + ' הסימונים נשמרים רק בדפדפן שלכם.</p>' +
-        '<div class="progress" aria-hidden="true"><div class="bar"><i id="bar"></i></div><p id="progress-text"></p></div>' +
-        CHECKLIST.groups.map(function (g) {
-          return '<section class="group"><h2><span>' + txt(g.title) + '</span> <span class="gcount" id="gc-' + g.id + '"></span></h2><ul class="checks">' +
-            g.items.map(function (t, i) {
-              var id = g.id + ':' + i, dom = 'c-' + g.id + '-' + i;
-              return '<li><input type="checkbox" id="' + dom + '" data-id="' + id + '"' + (state.checked.has(id) ? ' checked' : '') + '>' +
-                '<label for="' + dom + '"><span class="box">' + ICON_CHECK + '</span><span>' + txt(t) + '</span></label></li>';
+        '<p class="lead">' + txt(CHECKLIST.intro) + '</p>' +
+        '<ol class="stage-nav" aria-label="השלבים">' + CHECKLIST.stages.map(function (s, i) {
+          return '<li><a href="#st-' + s.id + '" data-jump="' + s.id + '"><span class="sn">0' + (i + 1) + '</span><span class="st">' + txt(s.title) + '</span><span class="sc" id="sc-' + s.id + '"></span></a></li>';
+        }).join('') + '</ol>' +
+
+        CHECKLIST.stages.map(function (s, i) {
+          return '<section class="stage" id="st-' + s.id + '" tabindex="-1" aria-labelledby="sh-' + s.id + '">' +
+            '<header class="stage-head"><span class="big-n" aria-hidden="true">0' + (i + 1) + '</span><div><h2 id="sh-' + s.id + '">' + txt(s.title) + '</h2>' +
+              '<p>' + txt(s.note) + '</p></div><span class="stage-done" id="sd-' + s.id + '" hidden>הושלם</span></header>' +
+            '<ul class="items">' + s.items.map(function (it) {
+              return '<li class="ritem" id="ri-' + it.id + '">' +
+                '<p class="rtext" id="rt-' + it.id + '">' + txt(it.text) + '</p>' +
+                (it.model && modelTitle(it.model) ? '<a class="idea no-print" href="#/model/' + encodeURIComponent(it.model) + '">רעיון מהפיילוט: ' + txt(modelTitle(it.model)) + '</a>' : '') +
+                '<div class="seg" role="radiogroup" aria-labelledby="rt-' + it.id + '">' + ANSWERS.map(function (a) {
+                  var dom = 'a-' + it.id + '-' + a.key;
+                  return '<input type="radio" name="ans-' + it.id + '" id="' + dom + '" value="' + a.key + '"' + (state.answers[it.id] === a.key ? ' checked' : '') + '>' +
+                    '<label for="' + dom + '" class="seg-' + a.key + '">' + a.label + '</label>';
+                }).join('') + '</div>' +
+                '<span class="print-ans" id="pa-' + it.id + '"></span>' +
+              '</li>';
             }).join('') + '</ul></section>';
         }).join('') +
-        '<p class="done" id="done" hidden>כל הסעיפים מסומנים. הקורס מוכן לפתיחת השנה.</p>' +
-        '<div class="doc-end no-print">' +
-          '<button type="button" class="link-btn" id="print">הדפסה / שמירה כ-PDF</button>' +
-          '<button type="button" class="link-btn" id="clear">ניקוי הסימונים</button>' +
-        '</div>' +
+
+        '<section class="todo" aria-labelledby="todo-h">' +
+          '<h2 id="todo-h">מה נשאר לי</h2>' +
+          '<p class="todo-sum" id="todo-sum" aria-live="polite"></p>' +
+          '<div id="todo-list"></div>' +
+          '<div class="todo-actions no-print">' +
+            '<button type="button" class="pill" id="print">הדפסת הרשימה</button>' +
+            '<button type="button" class="link-btn" id="clear">להתחיל מחדש</button>' +
+          '</div>' +
+        '</section>' +
+
         '<section class="contact"><h2>' + txt(CHECKLIST.contact.title) + '</h2><p>' + txt(CHECKLIST.contact.placeholder) + '</p></section>' +
       '</div>';
 
-    main.querySelectorAll('.checks input').forEach(function (cb) {
-      cb.addEventListener('change', function () {
-        var id = cb.getAttribute('data-id');
-        if (cb.checked) state.checked.add(id); else state.checked.delete(id);
-        writeJSON(CHECK_KEY, Array.from(state.checked));
-        updateChecklist(true);
+    main.querySelectorAll('.seg input').forEach(function (r) {
+      r.addEventListener('change', function () {
+        var id = r.name.slice(4);
+        state.answers[id] = r.value;
+        writeJSON(ANS_KEY, state.answers);
+        updateChecklist(id);
+      });
+    });
+    main.querySelectorAll('[data-jump]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var sec = document.getElementById('st-' + a.getAttribute('data-jump'));
+        sec.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+        sec.focus({ preventScroll: true });
       });
     });
     document.getElementById('print').addEventListener('click', function () { window.print(); });
     document.getElementById('clear').addEventListener('click', function () {
-      state.checked.clear();
-      writeJSON(CHECK_KEY, []);
-      main.querySelectorAll('.checks input').forEach(function (cb) { cb.checked = false; });
-      updateChecklist(false);
-      announce('הסימונים נוקו.');
+      if (!Object.keys(state.answers).length) { announce('אין עדיין תשובות.'); return; }
+      if (!window.confirm('למחוק את כל התשובות ולהתחיל מחדש?')) return;
+      state.answers = {};
+      writeJSON(ANS_KEY, state.answers);
+      main.querySelectorAll('.seg input').forEach(function (r) { r.checked = false; });
+      updateChecklist(null);
+      announce('התשובות נמחקו.');
     });
-    updateChecklist(false);
+    updateChecklist(null);
   }
 
-  function updateChecklist(speak) {
-    var total = totalItems();
-    var done = CHECKLIST.groups.reduce(function (n, g) { return n + groupDone(g); }, 0);
-    var pct = total ? Math.round(done / total * 100) : 0;
-    document.getElementById('bar').style.width = pct + '%';
-    document.getElementById('progress-text').innerHTML = '<strong>' + pct + '%</strong> מוכן · ' + done + ' מתוך ' + total + ' סעיפים';
-    CHECKLIST.groups.forEach(function (g) {
-      document.getElementById('gc-' + g.id).textContent = groupDone(g) + '/' + g.items.length;
+  function updateChecklist(changedId) {
+    var labels = { ready: 'מוכן', doing: 'בעבודה', na: 'לא רלוונטי' };
+    CHECKLIST.stages.forEach(function (s) {
+      var closed = stageClosed(s);
+      document.getElementById('sc-' + s.id).textContent = closed + '/' + s.items.length;
+      document.getElementById('sd-' + s.id).hidden = closed !== s.items.length;
+      s.items.forEach(function (it) {
+        var a = state.answers[it.id];
+        document.getElementById('ri-' + it.id).setAttribute('data-ans', a || 'none');
+        document.getElementById('pa-' + it.id).textContent = a ? labels[a] : 'לא סומן';
+      });
     });
-    var complete = done === total;
-    document.getElementById('done').hidden = !complete;
-    if (speak) announce(complete ? 'כל הסעיפים מסומנים. הקורס מוכן לפתיחת השנה.' : done + ' מתוך ' + total + ' סעיפים מסומנים.');
+
+    var open = allItems().filter(function (x) { return !isClosed(x.item.id); });
+    var total = totalItems();
+    var sum = document.getElementById('todo-sum');
+    var listEl = document.getElementById('todo-list');
+    if (!open.length) {
+      sum.textContent = 'הכול סגור. הקורס מוכן לסמסטר.';
+      sum.classList.add('all-done');
+      listEl.innerHTML = '';
+    } else {
+      sum.classList.remove('all-done');
+      sum.textContent = (total - open.length) + ' מתוך ' + total + ' סעיפים סגורים. נשארו ' + open.length + ':';
+      var byStage = {};
+      open.forEach(function (x) { (byStage[x.stage.id] = byStage[x.stage.id] || { stage: x.stage, items: [] }).items.push(x.item); });
+      listEl.innerHTML = Object.keys(byStage).map(function (k) {
+        var g = byStage[k];
+        return '<h3>' + txt(g.stage.title) + '</h3><ul>' + g.items.map(function (it) {
+          return '<li>' + (state.answers[it.id] === 'doing' ? '<span class="doing-tag">בעבודה</span> ' : '') + txt(it.text) + '</li>';
+        }).join('') + '</ul>';
+      }).join('');
+    }
+    if (changedId) {
+      var stageOf = null;
+      CHECKLIST.stages.forEach(function (s) { s.items.forEach(function (it) { if (it.id === changedId) stageOf = s; }); });
+      announce(!open.length ? 'הכול סגור. הקורס מוכן לסמסטר.'
+        : stageOf && stageClosed(stageOf) === stageOf.items.length ? 'השלב "' + stageOf.title + '" הושלם. נשארו ' + open.length + ' סעיפים.'
+        : 'נשארו ' + open.length + ' סעיפים פתוחים.');
+    }
   }
 
   /* ---------- boot ---------- */
