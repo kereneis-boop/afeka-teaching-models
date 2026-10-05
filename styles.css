@@ -380,3 +380,6 @@ blockquote::before { content: "”"; position: absolute; inset-inline-start: 16p
   .todo { padding: 0; margin-inline: 0; }
   .stage-done { border: 1px solid #000; }
 }
+.tag-ran { background: var(--accent-soft); color: var(--accent); }
+.tag-planned { background: color-mix(in srgb, var(--lime) 35%, transparent); color: var(--text); }
+.byline .tag { font-size: 13px; }

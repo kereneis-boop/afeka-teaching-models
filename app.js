@@ -52,6 +52,15 @@
     try { document.execCommand('copy'); } catch (e) {}
     ta.remove();
   }
+  // Status comes from the pilot tracking sheet: delivered in class, or scheduled for next year.
+  function statusTag(m) {
+    return m.status === 'planned'
+      ? '<span class="tag tag-planned">יועבר בכיתה בתשפ״ז</span>'
+      : '<span class="tag tag-ran">הועבר בכיתה</span>';
+  }
+  function ranCount() {
+    return MODELS.filter(function (m) { return m.status !== 'planned'; }).length;
+  }
   function takeCount() {
     return MODELS.reduce(function (n, m) { return n + m.take.length; }, 0);
   }
@@ -99,10 +108,10 @@
           '<div class="hero-text">' +
             '<p class="kicker">פיילוט הלומד העצמאי בסיוע <span class="nw">AI</span> · תשפ״ו</p>' +
             '<h1 class="blocks"><span class="b1">' + MODELS.length + ' דגמי הוראה.</span><span class="b2">מהכיתה, לקורס שלכם.</span></h1>' +
-            '<p class="lead">מרצים באפקה ניסו בכיתה למידה עצמאית בסיוע ' + txt('AI') + '. בכל דגם: מה הסטודנטים עשו, מה ' + txt('ה-AI') + ' עשה ומה לא, ומה אפשר לקחת לקורס שלכם.</p>' +
+            '<p class="lead">מרצים באפקה פיתחו יחידות של למידה עצמאית בסיוע ' + txt('AI') + '. בכל דגם: מה הסטודנטים עשו, מה ' + txt('ה-AI') + ' עשה ומה לא, ומה אפשר לקחת לקורס שלכם.</p>' +
             '<dl class="stats">' +
-              '<div><dt>' + MODELS.length + '</dt><dd>דגמים שנוסו בכיתה</dd></div>' +
-              '<div><dt>' + fields.length + '</dt><dd>תחומי הנדסה ושפה</dd></div>' +
+              '<div><dt>' + MODELS.length + '</dt><dd>דגמי הוראה מהפיילוט</dd></div>' +
+              '<div><dt>' + ranCount() + '</dt><dd>כבר הועברו בכיתה</dd></div>' +
               '<div><dt>' + takeCount() + '</dt><dd>פרומפטים וכלים להעתקה</dd></div>' +
             '</dl>' +
           '</div>' +
@@ -159,7 +168,7 @@
         '<span class="card-top"><span class="card-field">' + esc(m.field) + '</span><span class="big-n" aria-hidden="true">' + (n < 10 ? '0' : '') + n + '</span></span>' +
         '<h3>' + txt(m.title) + '</h3>' +
         '<p>' + txt(m.summary) + '</p>' +
-        (m.status === 'planned' ? '<span class="tag">מתוכנן לשנה הקרובה</span>' : '') +
+        statusTag(m) +
         '<span class="card-meta"><span>' + esc(m.people) + '</span><span class="card-go">לדגם ' + ICON_NEXT + '</span></span>' +
       '</a></li>';
     }).join('');
@@ -208,7 +217,7 @@
         '<a class="back no-print" href="#/">' + ICON_BACK + 'כל הדגמים</a>' +
         '<p class="kicker">' + esc(m.field) + ' · ' + txt(m.course) + '</p>' +
         '<h1>' + txt(m.title) + '</h1>' +
-        '<p class="byline">' + esc(m.people) + (m.status === 'planned' ? ' · <span class="tag">מתוכנן לשנה הקרובה</span>' : '') + '</p>' +
+        '<p class="byline">' + esc(m.people) + ' · ' + statusTag(m) + '</p>' +
         '<p class="lead">' + txt(m.summary) + '</p>' +
 
         '<dl class="brief">' +
