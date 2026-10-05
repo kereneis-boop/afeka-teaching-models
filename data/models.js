@@ -208,7 +208,7 @@ window.AFEKA_MODELS = [
       'בבחינה מופיעה שאלה קצרה על הנושא.'
     ],
     take: [
-      { kind: 'link', title: 'המטלה המלאה', links: [ { label: 'מטלת AI: אלמנט משולש מנוון (Google Drive)', url: 'https://drive.google.com/file/d/1OCujuYzqjkwIsPe-djzE5GWOjNRZIUnQ/view?usp=drive_link' } ] },
+      { kind: 'link', title: 'המטלה המלאה', links: [ { label: 'תרגיל בית 6: אלמנט משולש מנוון (Google Drive)', url: 'https://drive.google.com/file/d/1OCujuYzqjkwIsPe-djzE5GWOjNRZIUnQ/view?usp=drive_link' } ] },
       { kind: 'list', title: 'שאלות המשוב בסוף המטלה', items: [
         'עד כמה כלי ה-AI היה משמעותי עבורכם בביצוע המטלה?',
         'באילו סעיפים הוא עזר במיוחד, ובאילו פחות?',
