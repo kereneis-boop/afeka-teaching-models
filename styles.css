@@ -398,3 +398,4 @@ blockquote::before { content: "”"; position: absolute; inset-inline-start: 16p
 /* Status tag sits at the bottom of every card, at the same height across a row */
 .card .tag.status { margin-top: auto; }
 .card .tag.status + .card-meta { margin-top: 12px; }
+.card-course { font-size: 15px; font-weight: 700; color: var(--accent); margin-top: -4px; }

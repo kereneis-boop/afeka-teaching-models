@@ -118,7 +118,7 @@
             '<dl class="stats">' +
               '<div><dt>' + MODELS.length + '</dt><dd>דגמי הוראה מהפיילוט</dd></div>' +
               '<div><dt>' + ranCount() + '</dt><dd>כבר הועברו בכיתה</dd></div>' +
-              '<div><dt>' + takeCount() + '</dt><dd>פרומפטים וכלים להעתקה</dd></div>' +
+              '<div><dt>' + ((window.AFEKA_STATS || {}).lessonPlans || MODELS.length) + '</dt><dd>מערכי שיעור בפיילוט</dd></div>' +
             '</dl>' +
           '</div>' +
           '<div class="hero-art" aria-hidden="true">' + MODELS.slice(0, 3).map(function (m, i) {
@@ -130,7 +130,7 @@
       '<section class="how"><div class="wrap">' +
         '<h2 class="sec-h">איך <span class="hl">משתמשים</span> באתר?</h2>' +
         '<ol class="how-list">' +
-          '<li><span class="big-n">01</span><h3>בוחרים דגם</h3><p>מסננים לפי תחום ופותחים דגם שנשמע רלוונטי.</p></li>' +
+          '<li><span class="big-n">01</span><h3>בוחרים דגם</h3><p>מסננים לפי בית ספר ופותחים דגם שנשמע רלוונטי.</p></li>' +
           '<li><span class="big-n">02</span><h3>קוראים בדקה</h3><p>מה הסטודנטים עושים, מה ' + txt('ה-AI') + ' עושה, ואיך בודקים שהלמידה קרתה.</p></li>' +
           '<li><span class="big-n">03</span><h3>לוקחים לקורס</h3><p>מעתיקים את הפרומפטים והחומרים, ומתאימים לפי הטיפים של המרצה.</p></li>' +
         '</ol>' +
@@ -138,10 +138,10 @@
 
       '<section class="models" id="models"><div class="wrap">' +
         '<h2 class="sec-h">כל <span class="hl">הדגמים</span></h2>' +
-        '<div class="chips" role="group" aria-label="סינון לפי תחום">' +
+        '<div class="chips" role="group" aria-label="סינון לפי בית ספר">' +
           [{ name: '', count: MODELS.length }].concat(fields).map(function (f) {
             return '<button type="button" class="chip" data-field="' + esc(f.name) + '" aria-pressed="' + (state.field === f.name) + '">' +
-              (f.name ? esc(f.name) : 'כל התחומים') + ' <span class="chip-n">' + f.count + '</span></button>';
+              (f.name ? esc(f.name) : 'כל בתי הספר') + ' <span class="chip-n">' + f.count + '</span></button>';
           }).join('') +
         '</div>' +
         '<p class="count" id="count" aria-live="polite"></p>' +
@@ -172,7 +172,7 @@
       var n = MODELS.indexOf(m) + 1;
       return '<li><a class="card" href="#/model/' + encodeURIComponent(m.id) + '">' +
         '<span class="card-top"><span class="card-field">' + esc(m.field) + '</span><span class="big-n" aria-hidden="true">' + (n < 10 ? '0' : '') + n + '</span></span>' +
-        '<h3>' + txt(m.title) + '</h3>' +
+        '<h3>' + txt(m.title) + '</h3>' + '<p class="card-course">' + txt(String(m.course).replace(/\s*\(.*\)\s*$/, '')) + '</p>' +
         '<p>' + txt(m.summary) + '</p>' +
         statusTag(m) +
         '<span class="card-meta"><span>' + esc(m.people) + '</span><span class="card-go">לדגם ' + ICON_NEXT + '</span></span>' +
