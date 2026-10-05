@@ -383,3 +383,14 @@ blockquote::before { content: "”"; position: absolute; inset-inline-start: 16p
 .tag-ran { background: var(--accent-soft); color: var(--accent); }
 .tag-planned { background: color-mix(in srgb, var(--lime) 35%, transparent); color: var(--text); }
 .byline .tag { font-size: 13px; }
+
+/* Delivery status: three clearly different looks (color + icon + fill) */
+.tag.status { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 13px; padding: 3px 12px 3px 10px; border-radius: 999px; border: 1.5px solid transparent; line-height: 1.5; }
+.tag.status svg { flex: none; }
+.tag.status-ran { background: var(--deep); color: var(--on-deep); border-color: var(--deep); }
+.tag.status-partial { background: var(--card); color: var(--accent); border-color: var(--accent); border-style: dashed; }
+.tag.status-planned { background: var(--lime); color: var(--on-lime); border-color: var(--lime); }
+.byline .tag.status { font-size: 13px; }
+@media print {
+  .tag.status { background: #fff !important; color: #000 !important; border: 1px solid #000; }
+}

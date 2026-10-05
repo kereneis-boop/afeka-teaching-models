@@ -54,9 +54,15 @@
   }
   // Status comes from the pilot tracking sheet: delivered in class, or scheduled for next year.
   function statusTag(m) {
-    if (m.status === 'planned') return '<span class="tag tag-planned">יועבר בכיתה בתשפ״ז</span>';
-    if (m.status === 'partial') return '<span class="tag tag-ran">הועבר בחלקו בכיתה</span>';
-    return '<span class="tag tag-ran">הועבר בכיתה</span>';
+    // Three looks: solid + check (delivered), outline + half circle (partly), lime + clock (next year).
+    var icon = {
+      ran: '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m3.5 8.5 3 3 6-7"/></svg>',
+      partial: '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor"/></svg>',
+      planned: '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 4.8V8l2.2 1.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+    };
+    var s = m.status === 'planned' || m.status === 'partial' ? m.status : 'ran';
+    var label = { ran: 'הועבר בכיתה', partial: 'הועבר בחלקו בכיתה', planned: 'יועבר בכיתה בתשפ״ז' }[s];
+    return '<span class="tag status status-' + s + '">' + icon[s] + label + '</span>';
   }
   function ranCount() {
     return MODELS.filter(function (m) { return m.status !== 'planned'; }).length;
