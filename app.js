@@ -54,9 +54,9 @@
   }
   // Status comes from the pilot tracking sheet: delivered in class, or scheduled for next year.
   function statusTag(m) {
-    return m.status === 'planned'
-      ? '<span class="tag tag-planned">יועבר בכיתה בתשפ״ז</span>'
-      : '<span class="tag tag-ran">הועבר בכיתה</span>';
+    if (m.status === 'planned') return '<span class="tag tag-planned">יועבר בכיתה בתשפ״ז</span>';
+    if (m.status === 'partial') return '<span class="tag tag-ran">הועבר בחלקו בכיתה</span>';
+    return '<span class="tag tag-ran">הועבר בכיתה</span>';
   }
   function ranCount() {
     return MODELS.filter(function (m) { return m.status !== 'planned'; }).length;
