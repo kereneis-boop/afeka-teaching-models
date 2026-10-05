@@ -394,3 +394,7 @@ blockquote::before { content: "”"; position: absolute; inset-inline-start: 16p
 @media print {
   .tag.status { background: #fff !important; color: #000 !important; border: 1px solid #000; }
 }
+
+/* Status tag sits at the bottom of every card, at the same height across a row */
+.card .tag.status { margin-top: auto; }
+.card .tag.status + .card-meta { margin-top: 12px; }
