@@ -472,3 +472,25 @@ blockquote::before { content: "”"; position: absolute; inset-inline-start: 16p
 .contact-mail { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
 .foot a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .foot a:hover { color: var(--accent); }
+
+/* Quieter contact: no background, a thin line above */
+.readiness .contact { background: none; color: var(--text); border-radius: 0; padding: 24px 0 0; margin-top: 48px !important; border-top: 1px solid var(--line); }
+.readiness .contact h2 { color: var(--text); font-size: 20px !important; }
+.readiness .contact p { color: var(--text-2); opacity: 1; }
+.readiness .contact .contact-mail { color: var(--accent); }
+
+/* Student feedback */
+.feedback .fb-meta { color: var(--text-2); font-size: 15px; margin-bottom: 14px; }
+.fb-bars { list-style: none; padding: 0 !important; display: grid; gap: 14px; background: var(--card); border-radius: 20px; box-shadow: var(--shadow); padding: 18px 20px !important; }
+.fb-row { margin: 0 !important; display: grid; gap: 6px; }
+.fb-label { font-weight: 700; font-size: 16px; }
+.fb-bar { display: flex; height: 12px; border-radius: 99px; overflow: hidden; background: var(--line); }
+.fb-bar i { display: block; height: 100%; }
+.fb-high { background: var(--deep); }
+.fb-some { background: color-mix(in srgb, var(--accent) 45%, var(--card)); }
+.fb-no { background: var(--line); }
+.fb-nums { font-size: 14px; color: var(--text-2); }
+.fb-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 13px; color: var(--text-2); margin: 10px 0 6px; }
+.fb-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-inline-end: -8px; }
+.feedback > ul:not(.fb-bars) { margin-top: 14px; }
+@media print { .fb-bar { border: 1px solid #000; } .fb-high { background: #000 !important; } .fb-some { background: #888 !important; } }
