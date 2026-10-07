@@ -441,3 +441,34 @@ blockquote::before { content: "”"; position: absolute; inset-inline-start: 16p
   .g-tile, .citem { box-shadow: none; border: 1px solid #bbb; break-inside: avoid; }
   .citem input:checked + label .box { background: #000; color: #fff; }
 }
+
+/* =========================================================
+   Calmer "at a glance": one card, one column, one accent color
+   ========================================================= */
+.glance .g-grid { display: block; background: var(--card); border-radius: 24px; box-shadow: var(--shadow); padding: 6px 22px; }
+.glance .g-tile, .glance .g-not {
+  background: none; box-shadow: none; border: 0; border-radius: 0;
+  grid-template-columns: 40px 1fr; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line);
+}
+.glance .g-tile:last-child { border-bottom: 0; }
+.glance .g-icon, .glance .g-ai .g-icon, .glance .g-not .g-icon, .glance .g-check .g-icon {
+  width: 40px; height: 40px; border-radius: 12px; background: var(--accent-soft); color: var(--accent);
+}
+.glance .g-icon svg { width: 20px; height: 20px; }
+.glance .g-tile h3 { font-family: var(--font); font-weight: 700; font-size: 16px; color: var(--accent); margin: 0 0 4px !important; }
+.glance .g-tile p { font-size: 17px; color: var(--text); }
+.glance .g-tools { margin-top: 14px; }
+
+/* Previous / next model: plain links, no box */
+.model-nav { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); }
+.model-nav a { display: inline-flex; align-items: flex-start; gap: 10px; min-height: 44px; max-width: 46%; color: var(--text); text-decoration: none; }
+.model-nav a svg { flex: none; margin-top: 3px; color: var(--accent); }
+.model-nav .mn-next { text-align: end; margin-inline-start: auto; }
+.model-nav .mn-label { display: block; font-size: 14px; color: var(--text-2); }
+.model-nav .mn-title { display: block; font-weight: 700; font-size: 16px; line-height: 1.4; }
+.model-nav a:hover .mn-title { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 560px) { .model-nav { flex-direction: column; } .model-nav a { max-width: 100%; } .model-nav .mn-next { margin-inline-start: 0; } }
+
+.contact-mail { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-deep); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+.foot a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.foot a:hover { color: var(--accent); }

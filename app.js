@@ -277,7 +277,8 @@
       return;
     }
     var m = MODELS[idx];
-    var next = MODELS[(idx + 1) % MODELS.length];
+    var prev = idx > 0 ? MODELS[idx - 1] : null;
+    var next = idx < MODELS.length - 1 ? MODELS[idx + 1] : null;
     var learned = (m.worked.length || m.harder.length || m.quotes.length)
       ? '<section><h2>מה למדנו</h2>' +
           (m.worked.length ? '<h3>מה עבד</h3>' + list(m.worked) : '') +
@@ -325,9 +326,11 @@
           '</div>' +
         '</section>' +
 
-        '<div class="doc-end no-print">' +
-          '<a class="next" href="#/model/' + encodeURIComponent(next.id) + '"><span class="next-label">הדגם הבא</span><span class="next-title">' + txt(next.title) + '</span>' + ICON_NEXT + '</a>' +
-        '</div>' +
+        // RTL: "previous" sits on the right and points right; "next" sits on the left and points left.
+        '<nav class="model-nav no-print" aria-label="מעבר בין דגמים">' +
+          (prev ? '<a class="mn-prev" href="#/model/' + encodeURIComponent(prev.id) + '">' + ICON_BACK + '<span><span class="mn-label">הדגם הקודם</span><span class="mn-title">' + txt(prev.title) + '</span></span></a>' : '<span></span>') +
+          (next ? '<a class="mn-next" href="#/model/' + encodeURIComponent(next.id) + '"><span><span class="mn-label">הדגם הבא</span><span class="mn-title">' + txt(next.title) + '</span></span>' + ICON_NEXT + '</a>' : '<span></span>') +
+        '</nav>' +
       '</article>';
 
     document.getElementById('print').addEventListener('click', function () { window.print(); });
@@ -390,7 +393,8 @@
           '</div>' +
         '</section>' +
 
-        '<section class="contact"><h2>' + txt(CHECKLIST.contact.title) + '</h2><p>' + txt(CHECKLIST.contact.placeholder) + '</p></section>' +
+        '<section class="contact"><h2>' + txt(CHECKLIST.contact.title) + '</h2><p>' + txt(CHECKLIST.contact.text) + '</p>' +
+          '<p><a class="contact-mail" href="mailto:' + esc(CHECKLIST.contact.email) + '">' + esc(CHECKLIST.contact.email) + '</a></p></section>' +
       '</div>';
 
     main.querySelectorAll('.citem input').forEach(function (cb) {
