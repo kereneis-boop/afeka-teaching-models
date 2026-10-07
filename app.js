@@ -212,21 +212,12 @@
   var ICON_COPY = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M9 9h11v11H9zM5 15H4V4h11v1"/></svg>';
   var ICON_PRINT = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"/></svg>';
 
-  // Student feedback: response count, optional stacked bars per statement, key findings, quotes.
+  // Student feedback: written insights and a few quotes (no raw survey numbers).
   function feedbackSection(m) {
     var f = m.feedback;
     if (!f) return '';
-    var bars = (f.bars || []).map(function (b) {
-      var t = b.high + b.some + b.no;
-      var pct = function (v) { return (v / t * 100).toFixed(1) + '%'; };
-      return '<li class="fb-row"><span class="fb-label">' + txt(b.label) + '</span>' +
-        '<span class="fb-bar" aria-hidden="true"><i class="fb-high" style="width:' + pct(b.high) + '"></i><i class="fb-some" style="width:' + pct(b.some) + '"></i><i class="fb-no" style="width:' + pct(b.no) + '"></i></span>' +
-        '<span class="fb-nums">' + b.high + ' במידה רבה · ' + b.some + ' במידה מסוימת · ' + b.no + ' לא</span></li>';
-    }).join('');
-    return '<section class="feedback" aria-labelledby="fb-h"><h2 id="fb-h">משוב הסטודנטים</h2>' +
-      '<p class="fb-meta">' + (f.n === 1 ? 'סטודנט אחד ענה' : f.n + ' סטודנטים ענו') + ' · ' + txt(f.source) + '</p>' +
-      (bars ? '<ul class="fb-bars">' + bars + '</ul><p class="fb-legend" aria-hidden="true"><i class="fb-high"></i>במידה רבה <i class="fb-some"></i>במידה מסוימת <i class="fb-no"></i>לא</p>' : '') +
-      ((f.facts || []).length ? list(f.facts) : '') +
+    return '<section class="feedback" aria-labelledby="fb-h"><h2 id="fb-h">תובנות ממשוב הסטודנטים</h2>' +
+      ((f.insights || []).length ? list(f.insights) : '') +
       (f.quotes || []).map(function (q) { return '<blockquote>' + txt(q) + '</blockquote>'; }).join('') +
       '</section>';
   }
@@ -269,12 +260,10 @@
       if (m.quotes.length) { L.push('### מה אמרו הסטודנטים'); m.quotes.forEach(function (q) { L.push('> ' + q, ''); }); }
     }
     if (m.feedback) {
-      var f = m.feedback;
-      L.push('## משוב הסטודנטים', (f.n === 1 ? 'סטודנט אחד ענה' : f.n + ' סטודנטים ענו') + ' (' + f.source + ')', '');
-      (f.bars || []).forEach(function (b) { L.push('- ' + b.label + ': ' + b.high + ' במידה רבה, ' + b.some + ' במידה מסוימת, ' + b.no + ' לא'); });
-      bullets(f.facts || []);
+      L.push('## תובנות ממשוב הסטודנטים');
+      bullets(m.feedback.insights || []);
       L.push('');
-      (f.quotes || []).forEach(function (q) { L.push('> ' + q, ''); });
+      (m.feedback.quotes || []).forEach(function (q) { L.push('> ' + q, ''); });
     }
     L.push('## כדי להתאים לקורס שלכם', m.adapt, '');
     L.push('---', 'מתוך דגמי ההוראה של פיילוט הלומד העצמאי בסיוע AI, המרכז לקידום הוראה, אפקה.');
