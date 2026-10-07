@@ -399,3 +399,45 @@ blockquote::before { content: "”"; position: absolute; inset-inline-start: 16p
 .card .tag.status { margin-top: auto; }
 .card .tag.status + .card-meta { margin-top: 12px; }
 .card-course { font-size: 15px; font-weight: 700; color: var(--accent); margin-top: -4px; }
+
+/* =========================================================
+   Model page "at a glance": four tiles with icons + tool chips
+   ========================================================= */
+.glance { margin-top: 32px !important; }
+.g-grid { display: grid; gap: 14px; }
+@media (min-width: 700px) { .g-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.g-tile { display: grid; grid-template-columns: 48px 1fr; gap: 14px; align-items: start; background: var(--card); border-radius: 20px; box-shadow: var(--shadow); padding: 18px 18px 20px; }
+.g-icon { width: 48px; height: 48px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; background: var(--accent-soft); color: var(--accent); }
+.g-tile h3 { font-family: var(--display); font-weight: 400; font-size: 19px; margin: 2px 0 6px !important; color: var(--text); }
+.g-tile p { font-size: 16.5px; line-height: 1.65; }
+.g-ai .g-icon { background: var(--deep); color: var(--on-deep); }
+.g-not { background: color-mix(in srgb, var(--lime) 14%, var(--card)); box-shadow: none; border: 1.5px dashed color-mix(in srgb, var(--lime) 70%, var(--text)); }
+.g-not .g-icon { background: var(--lime); color: var(--on-lime); }
+.g-check .g-icon { background: var(--accent-soft); color: var(--accent); }
+.g-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
+.g-tools-label { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--text-2); font-size: 15px; margin-inline-end: 4px; }
+.tool-chip { display: inline-block; padding: 4px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 14px; }
+
+/* Save / continue with AI */
+.export { margin-top: 48px !important; background: var(--card); border-radius: 24px; box-shadow: var(--shadow); padding: 24px; }
+.export h2 { font-size: 24px !important; margin-bottom: 8px !important; }
+.export p { color: var(--text-2); font-size: 16px; }
+.export-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.export .pill { border: 0; cursor: pointer; font: inherit; font-weight: 700; font-size: 16px; min-height: 48px; padding: 8px 20px; }
+.pill-ghost { background: var(--card) !important; color: var(--text) !important; box-shadow: none !important; border: 1.5px solid var(--line) !important; }
+.pill-ghost:hover { border-color: var(--accent) !important; }
+
+/* Checklist: one checkbox per item */
+.citem { margin: 0 !important; background: var(--card); border-radius: 18px; box-shadow: var(--shadow); padding: 6px 8px; display: grid; gap: 0; border-inline-start: 6px solid var(--line); }
+.citem.is-done { border-inline-start-color: var(--accent); }
+.citem input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.citem label { display: flex; gap: 14px; align-items: flex-start; padding: 12px 10px; min-height: 52px; border-radius: 12px; cursor: pointer; font-size: 17px; }
+.citem label:hover { background: var(--soft); }
+.citem input:checked + label .box { background: var(--deep); border-color: var(--deep); color: var(--on-deep); }
+.citem input:checked + label { color: var(--text-2); }
+.citem input:focus-visible + label { outline: 3px solid var(--accent); outline-offset: 2px; }
+.citem .idea { margin-inline-start: 50px; margin-bottom: 4px; }
+@media print {
+  .g-tile, .citem { box-shadow: none; border: 1px solid #bbb; break-inside: avoid; }
+  .citem input:checked + label .box { background: #000; color: #fff; }
+}

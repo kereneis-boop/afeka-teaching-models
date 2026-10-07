@@ -3,11 +3,11 @@
 
   var MODELS = window.AFEKA_MODELS || [];
   var CHECKLIST = window.AFEKA_CHECKLIST || { groups: [] };
-  var ANS_KEY = 'afeka-readiness-v2';
+  var CHECK_KEY = 'afeka-checklist-v3';
 
   var main = document.getElementById('main');
   var announcer = document.getElementById('announcer');
-  var state = { field: '', homeScroll: 0, answers: readJSON(ANS_KEY, {}) };
+  var state = { field: '', homeScroll: 0, checked: readJSON(CHECK_KEY, {}) };
 
   var ICON_BACK = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>';
   var ICON_NEXT = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m6-6-6 6 6 6"/></svg>';
@@ -149,8 +149,8 @@
       '</div></section>' +
 
       '<section class="promo"><div class="wrap promo-row">' +
-        '<h2 class="blocks small"><span class="b1">הקורס שלכם מוכן לסמסטר?</span><span class="b2">' + CHECKLIST.stages.length + ' שלבים, ' + totalItems() + ' שאלות.</span></h2>' +
-        '<a class="pill" href="#/checklist">לבדיקת המוכנות ' + ICON_NEXT + '</a>' +
+        '<h2 class="blocks small"><span class="b1">מתכוננים לפתיחת השנה?</span><span class="b2">צ׳קליסט של ' + totalItems() + ' סעיפים.</span></h2>' +
+        '<a class="pill" href="#/checklist">לצ׳קליסט ' + ICON_NEXT + '</a>' +
       '</div></section>';
 
     main.querySelectorAll('.chip').forEach(function (b) {
@@ -200,6 +200,74 @@
     return '<ul>' + items.map(function (x) { return '<li>' + txt(x) + '</li>'; }).join('') + '</ul>';
   }
 
+  // Icons for the "at a glance" tiles (outline, 24px grid).
+  var GLANCE_ICONS = {
+    students: '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 12 0v1M16 3.5a4 4 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.6"/></svg>',
+    ai: '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>',
+    not: '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5.6 5.6l12.8 12.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+    check: '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 4h6v3H9zM7 5.5H5v15h14v-15h-2M8.5 13.5l2.5 2.5 4.5-5"/></svg>',
+    tools: '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a4 4 0 0 0 5 5l-8.4 8.4a2.1 2.1 0 0 1-3-3zM6 3l3 3-1.5 1.5-3-3"/></svg>'
+  };
+  var ICON_MD = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M6 3h8l4 4v14H6zM14 3v4h4M12 10v7m-3-3 3 3 3-3"/></svg>';
+  var ICON_COPY = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M9 9h11v11H9zM5 15H4V4h11v1"/></svg>';
+  var ICON_PRINT = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"/></svg>';
+
+  function glanceTile(kind, title, body) {
+    return '<div class="g-tile g-' + kind + '"><span class="g-icon">' + GLANCE_ICONS[kind] + '</span>' +
+      '<div><h3>' + txt(title) + '</h3><p>' + txt(body) + '</p></div></div>';
+  }
+
+  /* ---------- one model as Markdown: for an AI tool, or to keep as a file ---------- */
+  function modelMarkdown(m) {
+    var L = [];
+    var bullets = function (items) { items.forEach(function (x) { L.push('- ' + x); }); };
+    L.push('# ' + m.title, '');
+    L.push('**' + m.field + '** · ' + m.course + ' · ' + m.people, '');
+    L.push(m.summary, '');
+    L.push('## בקצרה');
+    L.push('- **מה הסטודנטים עושים:** ' + m.students);
+    L.push('- **במה ה-AI עוזר:** ' + m.ai);
+    L.push('- **מה ה-AI לא עושה:** ' + m.aiNot);
+    L.push('- **איך בודקים שהלמידה קרתה:** ' + m.assessment);
+    L.push('- **כלים:** ' + m.tools, '');
+    L.push('## איך זה עובד');
+    m.steps.forEach(function (s, i) { L.push((i + 1) + '. ' + s); });
+    L.push('');
+    if (m.take.length) {
+      L.push('## קחו לקורס שלכם');
+      m.take.forEach(function (t) {
+        L.push('### ' + t.title);
+        if (t.kind === 'prompt') L.push('```', t.text, '```');
+        else if (t.kind === 'link') t.links.forEach(function (l) { L.push('- [' + l.label + '](' + l.url + ')'); });
+        else bullets(t.items);
+        L.push('');
+      });
+    }
+    if (m.worked.length || m.harder.length || m.quotes.length) {
+      L.push('## מה למדנו');
+      if (m.worked.length) { L.push('### מה עבד'); bullets(m.worked); L.push(''); }
+      if (m.harder.length) { L.push('### מה היה קשה, ומה כדאי לדעת'); bullets(m.harder); L.push(''); }
+      if (m.quotes.length) { L.push('### מה אמרו הסטודנטים'); m.quotes.forEach(function (q) { L.push('> ' + q, ''); }); }
+    }
+    L.push('## כדי להתאים לקורס שלכם', m.adapt, '');
+    L.push('---', 'מתוך דגמי ההוראה של פיילוט הלומד העצמאי בסיוע AI, המרכז לקידום הוראה, אפקה.');
+    return L.join('\n');
+  }
+  function aiPrompt(m) {
+    return 'להלן דגם הוראה מפיילוט באפקה. עזרו לי להתאים אותו לקורס שלי.\n' +
+      'הקורס שלי: [שם הקורס, נושא היחידה, שנה ומספר סטודנטים]\n' +
+      'מה חשוב לי: [למשל: זמן הכנה קצר, עבודה בכיתה, סוג ההערכה]\n\n' + modelMarkdown(m);
+  }
+  function downloadText(text, filename) {
+    var blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+
   function renderModel(id) {
     var idx = -1;
     MODELS.forEach(function (m, i) { if (m.id === id) idx = i; });
@@ -226,13 +294,17 @@
         '<p class="byline">' + esc(m.people) + ' · ' + statusTag(m) + '</p>' +
         '<p class="lead">' + txt(m.summary) + '</p>' +
 
-        '<dl class="brief">' +
-          '<div><dt>הסטודנטים</dt><dd>' + txt(m.students) + '</dd></div>' +
-          '<div><dt>' + txt('ה-AI') + '</dt><dd>' + txt(m.ai) + '</dd></div>' +
-          '<div><dt>ומה לא</dt><dd>' + txt(m.aiNot) + '</dd></div>' +
-          '<div><dt>איך בודקים</dt><dd>' + txt(m.assessment) + '</dd></div>' +
-          '<div><dt>כלים</dt><dd>' + txt(m.tools) + '</dd></div>' +
-        '</dl>' +
+        '<section class="glance" aria-labelledby="glance-h"><h2 id="glance-h" class="sr-only">הדגם בקצרה</h2>' +
+          '<div class="g-grid">' +
+            glanceTile('students', 'מה הסטודנטים עושים', m.students) +
+            glanceTile('ai', 'במה ה-AI עוזר', m.ai) +
+            glanceTile('not', 'מה ה-AI לא עושה', m.aiNot) +
+            glanceTile('check', 'איך בודקים שהלמידה קרתה', m.assessment) +
+          '</div>' +
+          '<p class="g-tools"><span class="g-tools-label">' + GLANCE_ICONS.tools + 'כלים</span>' +
+            String(m.tools).split(/,\s*(?![^()]*\))/).map(function (t) { return '<span class="tool-chip">' + txt(t.trim()) + '</span>'; }).join('') +
+          '</p>' +
+        '</section>' +
 
         '<section><h2>איך זה עובד</h2><ol class="steps">' +
           m.steps.map(function (s) { return '<li>' + txt(s) + '</li>'; }).join('') + '</ol></section>' +
@@ -243,32 +315,41 @@
 
         '<section class="adapt"><h2>כדי להתאים לקורס שלכם</h2><p>' + txt(m.adapt) + '</p></section>' +
 
+        '<section class="export no-print" aria-labelledby="export-h">' +
+          '<h2 id="export-h">לשמור או להמשיך עם AI</h2>' +
+          '<p>העתיקו את הדגם עם בקשת התאמה מוכנה, הדביקו בכלי ה-AI שלכם והשלימו את פרטי הקורס. אפשר גם להוריד אותו כקובץ Markdown או להדפיס.</p>' +
+          '<div class="export-actions">' +
+            '<button type="button" class="pill" id="copy-ai">' + ICON_COPY + '<span class="lbl">העתקה לכלי AI</span></button>' +
+            '<button type="button" class="pill pill-ghost" id="dl-md">' + ICON_MD + 'הורדה כקובץ Markdown</button>' +
+            '<button type="button" class="pill pill-ghost" id="print">' + ICON_PRINT + 'הדפסה</button>' +
+          '</div>' +
+        '</section>' +
+
         '<div class="doc-end no-print">' +
-          '<button type="button" class="link-btn" id="print">הדפסה</button>' +
           '<a class="next" href="#/model/' + encodeURIComponent(next.id) + '"><span class="next-label">הדגם הבא</span><span class="next-title">' + txt(next.title) + '</span>' + ICON_NEXT + '</a>' +
         '</div>' +
       '</article>';
 
     document.getElementById('print').addEventListener('click', function () { window.print(); });
+    document.getElementById('copy-ai').addEventListener('click', function (e) { copyText(aiPrompt(m), e.currentTarget.querySelector('.lbl')); });
+    document.getElementById('dl-md').addEventListener('click', function () {
+      downloadText(modelMarkdown(m), 'דגם הוראה - ' + String(m.title).replace(/[\\/:*?"<>|]/g, '') + '.md');
+      announce('קובץ ה-Markdown ירד למחשב.');
+    });
     main.querySelectorAll('.copy').forEach(function (b) {
       b.addEventListener('click', function () { copyText(takeText(m.take[+b.getAttribute('data-take')]), b); });
     });
   }
 
-  /* ---------- readiness: stages in time, three answers per item ---------- */
-  var ANSWERS = [
-    { key: 'ready', label: 'מוכן' },
-    { key: 'doing', label: 'בעבודה' },
-    { key: 'na', label: 'לא רלוונטי' }
-  ];
+  /* ---------- checklist: stages in time, one checkbox per item ---------- */
   function allItems() {
     var out = [];
     CHECKLIST.stages.forEach(function (s) { s.items.forEach(function (it) { out.push({ stage: s, item: it }); }); });
     return out;
   }
   function totalItems() { return allItems().length; }
-  function isClosed(id) { var a = state.answers[id]; return a === 'ready' || a === 'na'; }
-  function stageClosed(s) { return s.items.filter(function (it) { return isClosed(it.id); }).length; }
+  function isDone(id) { return !!state.checked[id]; }
+  function stageDone(s) { return s.items.filter(function (it) { return isDone(it.id); }).length; }
   function modelTitle(id) {
     var t = '';
     MODELS.forEach(function (m) { if (m.id === id) t = m.title; });
@@ -278,7 +359,7 @@
   function renderChecklist() {
     main.innerHTML =
       '<div class="doc readiness">' +
-        '<p class="kicker">רשימת מוכנות למרצים · תשפ״ז</p>' +
+        '<p class="kicker">לקראת פתיחת שנה״ל תשפ״ז</p>' +
         '<h1>' + txt(CHECKLIST.title) + '</h1>' +
         '<p class="lead">' + txt(CHECKLIST.intro) + '</p>' +
         '<ol class="stage-nav" aria-label="השלבים">' + CHECKLIST.stages.map(function (s, i) {
@@ -290,15 +371,11 @@
             '<header class="stage-head"><span class="big-n" aria-hidden="true">0' + (i + 1) + '</span><div><h2 id="sh-' + s.id + '">' + txt(s.title) + '</h2>' +
               '<p>' + txt(s.note) + '</p></div><span class="stage-done" id="sd-' + s.id + '" hidden>הושלם</span></header>' +
             '<ul class="items">' + s.items.map(function (it) {
-              return '<li class="ritem" id="ri-' + it.id + '">' +
-                '<p class="rtext" id="rt-' + it.id + '">' + txt(it.text) + '</p>' +
+              var dom = 'c-' + it.id;
+              return '<li class="citem' + (isDone(it.id) ? ' is-done' : '') + '" id="ri-' + it.id + '">' +
+                '<input type="checkbox" id="' + dom + '" data-id="' + it.id + '"' + (isDone(it.id) ? ' checked' : '') + '>' +
+                '<label for="' + dom + '"><span class="box">' + ICON_CHECK + '</span><span>' + txt(it.text) + '</span></label>' +
                 (it.model && modelTitle(it.model) ? '<a class="idea no-print" href="#/model/' + encodeURIComponent(it.model) + '">רעיון מהפיילוט: ' + txt(modelTitle(it.model)) + '</a>' : '') +
-                '<div class="seg" role="radiogroup" aria-labelledby="rt-' + it.id + '">' + ANSWERS.map(function (a) {
-                  var dom = 'a-' + it.id + '-' + a.key;
-                  return '<input type="radio" name="ans-' + it.id + '" id="' + dom + '" value="' + a.key + '"' + (state.answers[it.id] === a.key ? ' checked' : '') + '>' +
-                    '<label for="' + dom + '" class="seg-' + a.key + '">' + a.label + '</label>';
-                }).join('') + '</div>' +
-                '<span class="print-ans" id="pa-' + it.id + '"></span>' +
               '</li>';
             }).join('') + '</ul></section>';
         }).join('') +
@@ -308,19 +385,19 @@
           '<p class="todo-sum" id="todo-sum" aria-live="polite"></p>' +
           '<div id="todo-list"></div>' +
           '<div class="todo-actions no-print">' +
-            '<button type="button" class="pill" id="print">הדפסת הרשימה</button>' +
-            '<button type="button" class="link-btn" id="clear">להתחיל מחדש</button>' +
+            '<button type="button" class="pill" id="print">הדפסה / שמירה כ-PDF</button>' +
+            '<button type="button" class="link-btn" id="clear">ניקוי הסימונים</button>' +
           '</div>' +
         '</section>' +
 
         '<section class="contact"><h2>' + txt(CHECKLIST.contact.title) + '</h2><p>' + txt(CHECKLIST.contact.placeholder) + '</p></section>' +
       '</div>';
 
-    main.querySelectorAll('.seg input').forEach(function (r) {
-      r.addEventListener('change', function () {
-        var id = r.name.slice(4);
-        state.answers[id] = r.value;
-        writeJSON(ANS_KEY, state.answers);
+    main.querySelectorAll('.citem input').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        var id = cb.getAttribute('data-id');
+        if (cb.checked) state.checked[id] = true; else delete state.checked[id];
+        writeJSON(CHECK_KEY, state.checked);
         updateChecklist(id);
       });
     });
@@ -334,56 +411,48 @@
     });
     document.getElementById('print').addEventListener('click', function () { window.print(); });
     document.getElementById('clear').addEventListener('click', function () {
-      if (!Object.keys(state.answers).length) { announce('אין עדיין תשובות.'); return; }
-      if (!window.confirm('למחוק את כל התשובות ולהתחיל מחדש?')) return;
-      state.answers = {};
-      writeJSON(ANS_KEY, state.answers);
-      main.querySelectorAll('.seg input').forEach(function (r) { r.checked = false; });
+      if (!Object.keys(state.checked).length) { announce('אין עדיין סימונים.'); return; }
+      state.checked = {};
+      writeJSON(CHECK_KEY, state.checked);
+      main.querySelectorAll('.citem input').forEach(function (cb) { cb.checked = false; });
       updateChecklist(null);
-      announce('התשובות נמחקו.');
+      announce('הסימונים נוקו.');
     });
     updateChecklist(null);
   }
 
   function updateChecklist(changedId) {
-    var labels = { ready: 'מוכן', doing: 'בעבודה', na: 'לא רלוונטי' };
     CHECKLIST.stages.forEach(function (s) {
-      var closed = stageClosed(s);
-      document.getElementById('sc-' + s.id).textContent = closed + '/' + s.items.length;
-      document.getElementById('sd-' + s.id).hidden = closed !== s.items.length;
-      s.items.forEach(function (it) {
-        var a = state.answers[it.id];
-        document.getElementById('ri-' + it.id).setAttribute('data-ans', a || 'none');
-        document.getElementById('pa-' + it.id).textContent = a ? labels[a] : 'לא סומן';
-      });
+      var done = stageDone(s);
+      document.getElementById('sc-' + s.id).textContent = done + '/' + s.items.length;
+      document.getElementById('sd-' + s.id).hidden = done !== s.items.length;
+      s.items.forEach(function (it) { document.getElementById('ri-' + it.id).classList.toggle('is-done', isDone(it.id)); });
     });
 
-    var open = allItems().filter(function (x) { return !isClosed(x.item.id); });
+    var open = allItems().filter(function (x) { return !isDone(x.item.id); });
     var total = totalItems();
     var sum = document.getElementById('todo-sum');
     var listEl = document.getElementById('todo-list');
     if (!open.length) {
-      sum.textContent = 'הכול סגור. הקורס מוכן לסמסטר.';
+      sum.textContent = 'כל הסעיפים מסומנים. הקורס מוכן לפתיחת השנה.';
       sum.classList.add('all-done');
       listEl.innerHTML = '';
     } else {
       sum.classList.remove('all-done');
-      sum.textContent = (total - open.length) + ' מתוך ' + total + ' סעיפים סגורים. נשארו ' + open.length + ':';
+      sum.textContent = (total - open.length) + ' מתוך ' + total + ' סעיפים מסומנים. נשארו ' + open.length + ':';
       var byStage = {};
       open.forEach(function (x) { (byStage[x.stage.id] = byStage[x.stage.id] || { stage: x.stage, items: [] }).items.push(x.item); });
       listEl.innerHTML = Object.keys(byStage).map(function (k) {
         var g = byStage[k];
-        return '<h3>' + txt(g.stage.title) + '</h3><ul>' + g.items.map(function (it) {
-          return '<li>' + (state.answers[it.id] === 'doing' ? '<span class="doing-tag">בעבודה</span> ' : '') + txt(it.text) + '</li>';
-        }).join('') + '</ul>';
+        return '<h3>' + txt(g.stage.title) + '</h3><ul>' + g.items.map(function (it) { return '<li>' + txt(it.text) + '</li>'; }).join('') + '</ul>';
       }).join('');
     }
     if (changedId) {
       var stageOf = null;
       CHECKLIST.stages.forEach(function (s) { s.items.forEach(function (it) { if (it.id === changedId) stageOf = s; }); });
-      announce(!open.length ? 'הכול סגור. הקורס מוכן לסמסטר.'
-        : stageOf && stageClosed(stageOf) === stageOf.items.length ? 'השלב "' + stageOf.title + '" הושלם. נשארו ' + open.length + ' סעיפים.'
-        : 'נשארו ' + open.length + ' סעיפים פתוחים.');
+      announce(!open.length ? 'כל הסעיפים מסומנים. הקורס מוכן לפתיחת השנה.'
+        : stageOf && stageDone(stageOf) === stageOf.items.length ? 'השלב "' + stageOf.title + '" הושלם. נשארו ' + open.length + ' סעיפים.'
+        : 'נשארו ' + open.length + ' סעיפים.');
     }
   }
 
