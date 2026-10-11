@@ -12,6 +12,7 @@
   var ICON_BACK = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>';
   var ICON_NEXT = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m6-6-6 6 6 6"/></svg>';
   var ICON_OUT = '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5M19 5l-8 8M10 5H5v14h14v-5"/></svg>';
+  var ICON_PLAY = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13l11-6.5z"/></svg>';
   var ICON_CHECK = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="m5 12 5 5 9-10"/></svg>';
 
   /* ---------- helpers ---------- */
@@ -120,19 +121,12 @@
               '<div><dt>' + ranCount() + '</dt><dd>כבר הועברו בכיתה</dd></div>' +
               '<div><dt>' + ((window.AFEKA_STATS || {}).lessonPlans || MODELS.length) + '</dt><dd>מערכי שיעור בפיילוט</dd></div>' +
             '</dl>' +
+            '<button type="button" class="video-btn" id="open-video" aria-haspopup="dialog">' + ICON_PLAY + 'צפו בסרטון הפתיחה <span class="video-len">דקה וחצי</span></button>' +
           '</div>' +
           '<div class="hero-art" aria-hidden="true">' + MODELS.slice(0, 3).map(function (m, i) {
             return '<div class="mini mini-' + i + '"><span class="mini-n">0' + (i + 1) + '</span><span class="mini-f">' + esc(m.field) + '</span><span class="mini-t">' + txt(m.title) + '</span></div>';
           }).join('') + '</div>' +
         '</div>' +
-      '</div></section>' +
-
-      // Conference opening video (Center's YouTube channel). youtube-nocookie avoids tracking cookies until play.
-      '<section class="video" aria-labelledby="video-h"><div class="wrap">' +
-        '<h2 id="video-h" class="sec-h">הפיילוט <span class="hl">בדקה וחצי</span></h2>' +
-        '<div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/D-R5PPmdo7I?rel=0" title="כנס הסגל האקדמי תשפ״ז: סרטון הפתיחה" loading="lazy" ' +
-          'allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>' +
-        '<p class="video-alt no-print"><a href="https://youtu.be/D-R5PPmdo7I" target="_blank" rel="noopener">לצפייה ב-YouTube<span class="sr-only"> (נפתח בלשונית חדשה)</span></a></p>' +
       '</div></section>' +
 
       '<section class="how"><div class="wrap">' +
@@ -169,6 +163,26 @@
       });
     });
     renderCards();
+    document.getElementById('open-video').addEventListener('click', openVideo);
+  }
+
+  // Opening video in a dialog, so it takes no space on the page. The iframe is created on open and removed on close.
+  var VIDEO_SRC = 'https://www.youtube-nocookie.com/embed/D-R5PPmdo7I?rel=0&autoplay=1';
+  function openVideo(e) {
+    var opener = e.currentTarget;
+    var dlg = document.createElement('dialog');
+    dlg.className = 'video-dialog';
+    dlg.setAttribute('aria-label', 'סרטון הפתיחה של כנס הסגל');
+    dlg.innerHTML = '<button type="button" class="video-close" aria-label="סגירת הסרטון">×</button>' +
+      '<div class="video-frame"><iframe src="' + VIDEO_SRC + '" title="כנס הסגל האקדמי תשפ״ז: סרטון הפתיחה" ' +
+      'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>';
+    document.body.appendChild(dlg);
+    var close = function () { dlg.close(); };
+    dlg.querySelector('.video-close').addEventListener('click', close);
+    dlg.addEventListener('click', function (ev) { if (ev.target === dlg) close(); });
+    dlg.addEventListener('close', function () { dlg.remove(); opener.focus(); });
+    dlg.showModal();
+    dlg.querySelector('.video-close').focus();
   }
 
   function renderCards() {
@@ -391,6 +405,8 @@
         '<p class="kicker">לקראת פתיחת שנה״ל תשפ״ז</p>' +
         '<h1>' + txt(CHECKLIST.title) + '</h1>' +
         '<p class="lead">' + txt(CHECKLIST.intro) + '</p>' +
+        '<div class="save-note" role="note"><p><strong>שימו לב: האתר לא שומר את הסימונים.</strong> הם נשארים רק בדפדפן הזה, ועלולים להימחק אם מנקים את הדפדפן או עוברים למחשב אחר. כדי לשמור אותם לשימושכם, הדפיסו או שמרו כ-PDF.</p>' +
+          '<button type="button" class="pill no-print" id="print-top">' + ICON_PRINT + 'הדפסה / שמירה כ-PDF</button></div>' +
         '<ol class="stage-nav" aria-label="השלבים">' + CHECKLIST.stages.map(function (s, i) {
           return '<li><a href="#st-' + s.id + '" data-jump="' + s.id + '"><span class="sn">0' + (i + 1) + '</span><span class="st">' + txt(s.title) + '</span><span class="sc" id="sc-' + s.id + '"></span></a></li>';
         }).join('') + '</ol>' +
@@ -440,6 +456,7 @@
       });
     });
     document.getElementById('print').addEventListener('click', function () { window.print(); });
+    document.getElementById('print-top').addEventListener('click', function () { window.print(); });
     document.getElementById('clear').addEventListener('click', function () {
       if (!Object.keys(state.checked).length) { announce('אין עדיין סימונים.'); return; }
       state.checked = {};

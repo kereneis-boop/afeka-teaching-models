@@ -502,3 +502,26 @@ blockquote::before { content: "”"; position: absolute; inset-inline-start: 16p
 .video-alt { margin-top: 10px; font-size: 15px; }
 .video-alt a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
 @media print { .video { display: none; } }
+
+/* Opening video: a small button in the hero, the player opens in a dialog */
+.video-btn {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; margin-top: 26px; padding: 6px 18px 6px 8px;
+  border-radius: 999px; border: 1.5px solid var(--line); background: var(--card); color: var(--text); font: inherit; font-weight: 700; cursor: pointer;
+}
+.video-btn svg { width: 32px; height: 32px; padding: 8px; border-radius: 50%; background: var(--deep); color: var(--on-deep); }
+.video-btn:hover { border-color: var(--accent); }
+.video-len { font-weight: 400; color: var(--text-2); font-size: 14px; }
+.video-dialog { width: min(960px, 94vw); padding: 0; border: 0; border-radius: 20px; background: #000; overflow: visible; }
+.video-dialog::backdrop { background: rgba(5, 10, 11, .78); }
+.video-dialog .video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 20px; overflow: hidden; }
+.video-dialog iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+.video-close {
+  position: absolute; top: -54px; inset-inline-end: 0; width: 44px; height: 44px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--card); color: var(--text); font-size: 26px; line-height: 1;
+}
+
+/* Checklist: the site does not keep the marks */
+.save-note { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 22px; padding: 16px 18px; border-radius: 16px; background: var(--card); border-inline-start: 6px solid var(--lime); box-shadow: var(--shadow); }
+.save-note p { flex: 1 1 320px; font-size: 16px; color: var(--text); }
+.save-note .pill { border: 0; cursor: pointer; font: inherit; font-weight: 700; font-size: 16px; min-height: 48px; padding: 8px 20px; }
+@media print { .save-note { box-shadow: none; border: 1px solid #000; } }
