@@ -121,11 +121,13 @@
               '<div><dt>' + ranCount() + '</dt><dd>כבר הועברו בכיתה</dd></div>' +
               '<div><dt>' + ((window.AFEKA_STATS || {}).lessonPlans || MODELS.length) + '</dt><dd>מערכי שיעור בפיילוט</dd></div>' +
             '</dl>' +
-            '<button type="button" class="video-btn" id="open-video" aria-haspopup="dialog">' + ICON_PLAY + 'צפו בסרטון הפתיחה <span class="video-len">דקה וחצי</span></button>' +
           '</div>' +
-          '<div class="hero-art" aria-hidden="true">' + MODELS.slice(0, 3).map(function (m, i) {
-            return '<div class="mini mini-' + i + '"><span class="mini-n">0' + (i + 1) + '</span><span class="mini-f">' + esc(m.field) + '</span><span class="mini-t">' + txt(m.title) + '</span></div>';
-          }).join('') + '</div>' +
+          // Conference opening video, open in the hero (youtube-nocookie: no tracking cookies until play).
+          '<figure class="hero-video">' +
+            '<div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/D-R5PPmdo7I?rel=0" title="כנס הסגל האקדמי תשפ״ז: סרטון הפתיחה" loading="lazy" ' +
+              'allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>' +
+            '<figcaption>סרטון הפתיחה של הכנס · דקה וחצי</figcaption>' +
+          '</figure>' +
         '</div>' +
       '</div></section>' +
 
@@ -163,26 +165,6 @@
       });
     });
     renderCards();
-    document.getElementById('open-video').addEventListener('click', openVideo);
-  }
-
-  // Opening video in a dialog, so it takes no space on the page. The iframe is created on open and removed on close.
-  var VIDEO_SRC = 'https://www.youtube-nocookie.com/embed/D-R5PPmdo7I?rel=0&autoplay=1';
-  function openVideo(e) {
-    var opener = e.currentTarget;
-    var dlg = document.createElement('dialog');
-    dlg.className = 'video-dialog';
-    dlg.setAttribute('aria-label', 'סרטון הפתיחה של כנס הסגל');
-    dlg.innerHTML = '<button type="button" class="video-close" aria-label="סגירת הסרטון">×</button>' +
-      '<div class="video-frame"><iframe src="' + VIDEO_SRC + '" title="כנס הסגל האקדמי תשפ״ז: סרטון הפתיחה" ' +
-      'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>';
-    document.body.appendChild(dlg);
-    var close = function () { dlg.close(); };
-    dlg.querySelector('.video-close').addEventListener('click', close);
-    dlg.addEventListener('click', function (ev) { if (ev.target === dlg) close(); });
-    dlg.addEventListener('close', function () { dlg.remove(); opener.focus(); });
-    dlg.showModal();
-    dlg.querySelector('.video-close').focus();
   }
 
   function renderCards() {
