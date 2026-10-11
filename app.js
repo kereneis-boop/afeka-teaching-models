@@ -127,6 +127,14 @@
         '</div>' +
       '</div></section>' +
 
+      // Conference opening video (Center's YouTube channel). youtube-nocookie avoids tracking cookies until play.
+      '<section class="video" aria-labelledby="video-h"><div class="wrap">' +
+        '<h2 id="video-h" class="sec-h">הפיילוט <span class="hl">בדקה וחצי</span></h2>' +
+        '<div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/D-R5PPmdo7I?rel=0" title="כנס הסגל האקדמי תשפ״ז: סרטון הפתיחה" loading="lazy" ' +
+          'allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>' +
+        '<p class="video-alt no-print"><a href="https://youtu.be/D-R5PPmdo7I" target="_blank" rel="noopener">לצפייה ב-YouTube<span class="sr-only"> (נפתח בלשונית חדשה)</span></a></p>' +
+      '</div></section>' +
+
       '<section class="how"><div class="wrap">' +
         '<h2 class="sec-h">איך <span class="hl">משתמשים</span> באתר?</h2>' +
         '<ol class="how-list">' +
