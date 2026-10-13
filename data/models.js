@@ -67,7 +67,7 @@ window.AFEKA_MODELS = [
   {
     id: 'lcd-ai-tutor',
     title: 'ה-AI כמורה, לא כפתרון: תצוגת LCD על כרטיס אמיתי',
-    people: 'ד״ר ב.א.',
+    people: 'ד״ר בנימין אברמוב',
     field: 'הנדסת חשמל',
     course: 'מיקרו-מעבדים ומיקרו-בקרים',
     status: 'ran',
@@ -113,7 +113,7 @@ window.AFEKA_MODELS = [
   {
     id: 'converter-project-defense',
     title: 'פרויקטון עם תיעוד AI והגנה בעל פה',
-    people: 'ד״ר נ.ע.',
+    people: 'ד״ר ניסים עמר',
     field: 'הנדסת חשמל',
     course: 'אלקטרוניקת הספק',
     status: 'partial',
@@ -159,7 +159,7 @@ window.AFEKA_MODELS = [
   {
     id: 'is-the-llm-right',
     title: 'מה ה-LLM אומר, והאם זה נכון?',
-    people: 'ד״ר ע.ז.',
+    people: 'ד״ר עופר זיו',
     field: 'הנדסת חשמל',
     course: 'קורס בהנדסת חשמל (אלקטרוניקה)',
     status: 'ran',
@@ -427,7 +427,7 @@ window.AFEKA_MODELS = [
   {
     id: 'python-statistics',
     title: 'סטטיסטיקה בפייתון: קוד מוכן ומשימת המשך',
-    people: 'ד״ר א.א.',
+    people: 'ד״ר אוהד איזנהנדלר',
     field: 'הנדסת תעשייה וניהול',
     course: 'מדעי הנתונים להנדסה',
     status: 'ran',
@@ -516,7 +516,7 @@ window.AFEKA_MODELS = [
   {
     id: 'strings-self-learning',
     title: 'לומדה ללמידה עצמית ובוחן קצר בכיתה',
-    people: 'א.ה.מ.',
+    people: 'אפרת הרצברג מורג',
     field: 'הנדסת תוכנה ומדעי המחשב (מדמ״ח)',
     course: 'מבוא לתכנות מערכות',
     status: 'planned',
@@ -546,7 +546,7 @@ window.AFEKA_MODELS = [
   {
     id: 'requirements-notebooklm',
     title: 'תקן IEEE 830: בוחן ב-NotebookLM וסוכן שלא נותן תשובה',
-    people: 'ש.ט.',
+    people: 'שמואל טושברוביץ',
     field: 'הנדסת תוכנה ומדעי המחשב (מדמ״ח)',
     course: 'הנדסת דרישות',
     status: 'planned',
