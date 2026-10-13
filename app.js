@@ -179,7 +179,7 @@
         '<h3>' + txt(m.title) + '</h3>' + '<p class="card-course">' + txt(String(m.course).replace(/\s*\(.*\)\s*$/, '')) + '</p>' +
         '<p>' + txt(m.summary) + '</p>' +
         statusTag(m) +
-        '<span class="card-meta"><span>' + esc(m.people) + '</span><span class="card-go">לדגם ' + ICON_NEXT + '</span></span>' +
+        '<span class="card-meta"><span>' + esc(m.people) + (m.source === 'works' ? ' <span class="src-note">· מחומרי הפיילוט</span>' : '') + '</span><span class="card-go">לדגם ' + ICON_NEXT + '</span></span>' +
       '</a></li>';
     }).join('');
   }
@@ -313,6 +313,8 @@
         '<p class="kicker">' + esc(m.field) + ' · ' + txt(m.course) + '</p>' +
         '<h1>' + txt(m.title) + '</h1>' +
         '<p class="byline">' + esc(m.people) + ' · ' + statusTag(m) + '</p>' +
+        // Minor note: this model was written from the pilot materials, not from a model card the lecturer filled in.
+        (m.source === 'works' ? '<p class="src-line">נכתב מתוך חומרי הפיילוט של המרצה (מערך שיעור ורפלקציה), ולא מכרטיס דגם.</p>' : '') +
         '<p class="lead">' + txt(m.summary) + '</p>' +
 
         '<section class="glance" aria-labelledby="glance-h"><h2 id="glance-h" class="sr-only">הדגם בקצרה</h2>' +

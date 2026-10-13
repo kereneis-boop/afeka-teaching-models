@@ -537,3 +537,7 @@ blockquote::before { content: "”"; position: absolute; inset-inline-start: 16p
   .hero .blocks { font-size: clamp(32px, 3.2vw, 46px); }
   .hero .blocks span { white-space: normal; }
 }
+
+/* Minor distinction: models written from pilot materials (no model card) */
+.src-note { color: var(--text-2); font-weight: 400; opacity: .85; white-space: nowrap; }
+.src-line { margin-top: 6px; font-size: 14px; color: var(--text-2); }
