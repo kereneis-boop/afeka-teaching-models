@@ -249,7 +249,7 @@ window.AFEKA_MODELS = [
   {
     id: 'collapsed-element',
     title: 'לומדים בעזרת AI נושא שלא נלמד בכיתה',
-    people: 'אורי אלבוחר',
+    people: 'ד״ר אורי אלבוחר',
     field: 'הנדסה מכנית',
     course: 'שיטות חישוביות (חובה בהתמחות, שנים ג׳–ד׳, כ-25 סטודנטים)',
     status: 'ran',
@@ -387,7 +387,7 @@ window.AFEKA_MODELS = [
   {
     id: 'medical-device-classification',
     title: 'סיווג טכנולוגיות רפואיות בעזרת AI, וביקורת עצמאית',
-    people: 'נדב שפר',
+    people: 'ד״ר נדב שפר',
     field: 'הנדסה רפואית',
     course: 'הנדסה קלינית וניהול מערכות טכנולוגיות-רפואיות (50501; שנים ג׳–ד׳, חובה במסלול הנדסה קלינית; 45–50 סטודנטים)',
     status: 'planned',
@@ -546,7 +546,7 @@ window.AFEKA_MODELS = [
   {
     id: 'requirements-notebooklm',
     title: 'תקן IEEE 830: בוחן ב-NotebookLM וסוכן שלא נותן תשובה',
-    people: 'שמואל טושברוביץ',
+    people: 'פרופ׳ שמואל טושברוביץ',
     field: 'הנדסת תוכנה ומדעי המחשב (מדמ״ח)',
     course: 'הנדסת דרישות',
     status: 'planned',
@@ -654,7 +654,7 @@ window.AFEKA_MODELS = [
   {
     id: 'probe-the-model',
     title: 'חוקרים את המודל: שלושה מודלי שפה אנונימיים',
-    people: 'שרון ילוב הנדזל',
+    people: 'ד״ר שרון ילוב הנדזל',
     field: 'הנדסת תוכנה ומדעי המחשב (מדמ״ח)',
     course: 'עיבוד שפה טבעית (תואר שני ותואר ראשון)',
     status: 'ran',
