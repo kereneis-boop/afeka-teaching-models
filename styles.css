@@ -563,3 +563,6 @@ blockquote::before { content: "”"; position: absolute; inset-inline-start: 16p
 .sc-frame:focus-visible { outline: 3px solid #F2C14E; outline-offset: -3px; }
 .sc-badge { position: absolute; z-index: 1; inset-block-start: 14px; inset-inline-end: 14px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgba(15,34,51,.75); color: #fff; font-size: 13px; font-weight: 700; }
 .sc-badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #F2C14E; }
+
+/* code samples: keep lines intact, scroll sideways inside the box */
+.prompt.code { white-space: pre; overflow-x: auto; text-align: left; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; line-height: 1.6; }

@@ -192,7 +192,7 @@
       }).join('') + '</ul></div>';
     }
     var body = t.kind === 'prompt'
-      ? '<pre class="prompt" dir="auto">' + esc(t.text) + '</pre>'
+      ? (t.code ? '<pre class="prompt code" dir="ltr" tabindex="0">' : '<pre class="prompt" dir="auto">') + esc(t.text) + '</pre>'
       : '<ul>' + t.items.map(function (x) { return '<li>' + txt(x) + '</li>'; }).join('') + '</ul>';
     return '<div class="block"><div class="block-head"><h3>' + txt(t.title) + '</h3>' +
       '<button type="button" class="copy no-print" data-take="' + i + '">העתקה</button></div>' + body + '</div>';
