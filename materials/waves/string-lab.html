@@ -1,0 +1,520 @@
+<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מעבדת המיתר — תורת הגלים (מהדורה 7)</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet"><style>:root{
+  --ink:#14283a; --muted:#56687a; --paper:#f6f8fa; --sheet:#ffffff; --rule:#d6dee6;
+  --blue:#1f5a85; --orange:#e07b28; --green:#2e8b57; --red:#c0392b;
+  --bench:#0f2233; --bench2:#16314a;
+  --lab-grid:#24425c; --lab-axis:#7f9bb3; --lab-string:#ffd166; --lab-heavy:#f28c28;
+  --ui:"Heebo",Arial,"Segoe UI",sans-serif; --read:"Frank Ruhl Libre","David",Georgia,serif;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:64px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--read);font-size:18px;line-height:1.75}
+a{color:var(--blue)} a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,canvas:focus-visible,summary:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:10px 20px;background:var(--sheet);border-bottom:1px solid var(--rule);font-family:var(--ui)}
+.brand{font-weight:700;font-size:20px;text-decoration:none;color:var(--ink)} .brand small{font-weight:400;color:var(--muted);font-size:14px;margin-inline-start:8px}
+.tolab{margin-inline-start:auto;font-weight:500}
+#toc-toggle{font-family:var(--ui);border:1px solid var(--rule);background:var(--paper);border-radius:6px;padding:6px 12px;cursor:pointer}
+#side{position:fixed;top:58px;bottom:0;right:0;width:300px;overflow:auto;padding:16px 18px 40px;background:var(--sheet);border-left:1px solid var(--rule);font-family:var(--ui);font-size:14px;line-height:1.5;z-index:15}
+#side h2{font-size:16px;margin:0 0 8px}
+.toc,.toc ol{list-style:none;margin:0;padding:0} .toc ol{padding-inline-start:12px;margin:4px 0 8px}
+.toc summary{cursor:pointer;padding:3px 0} .toc summary a{font-weight:500;color:var(--ink);text-decoration:none}
+.toc li a{text-decoration:none} .toc li li a{color:var(--muted)} .toc a:hover{color:var(--blue);text-decoration:underline}
+main{margin-right:300px;padding:0 0 80px}
+body.solo main{margin:0}
+/* ---------- lab ---------- */
+#lab{background:var(--bench);color:#e8eef4;padding:22px 28px 26px;font-family:var(--ui);font-size:15px;line-height:1.5}
+.lab-head h1{margin:0 0 4px;font-size:30px;letter-spacing:.01em}
+.lab-head p{margin:0 0 14px;color:#b9c8d6;max-width:72ch}
+.lab-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px}
+.lab-stage canvas{width:100%;height:440px;display:block;background:radial-gradient(circle at 50% 40%,var(--bench2),var(--bench));border:1px solid #2a4a66;border-radius:8px;cursor:grab;touch-action:none}
+.lab-stage canvas:active{cursor:grabbing}
+.lab-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+#lab button{font-family:var(--ui);font-size:14px;border:1px solid #3c6385;background:#183a57;color:#e8eef4;border-radius:6px;padding:6px 12px;cursor:pointer}
+#lab button:hover{background:#21496b} #lab button.primary{background:var(--orange);border-color:var(--orange);color:#1b1206;font-weight:700;width:100%;margin-top:8px}
+.inline{display:inline-flex;gap:6px;align-items:center;color:#cfdae5}
+.lab-read{color:#b9c8d6;margin:8px 0 0;font-size:14px} .lab-msg{color:#ffb4a8;margin:4px 0 0;min-height:1em}
+.lab-tables{display:flex;flex-wrap:wrap;gap:18px;margin-top:8px}
+#lab-table{border-collapse:collapse;font-size:13px} #lab-table th,#lab-table td{border-bottom:1px solid #2a4a66;padding:3px 10px;text-align:center}
+#lab-table th{color:#9fb6ca;font-weight:500} #lab-junctions{margin:0;padding-inline-start:18px;font-size:13px;color:#cfdae5}
+.lab-controls{background:#132c42;border:1px solid #2a4a66;border-radius:8px;padding:10px 14px;max-height:640px;overflow:auto}
+.lab-controls fieldset{border:0;border-top:1px solid #2a4a66;margin:0;padding:10px 0 6px}
+.lab-controls fieldset:first-child{border-top:0}
+.lab-controls legend{font-weight:700;color:#ffd166;padding:0;font-size:14px}
+.ctl{display:grid;grid-template-columns:1fr 110px 42px 28px;gap:6px;align-items:center;margin:6px 0;font-size:13.5px}
+.ctl select,.ctl input[type=text]{grid-column:2 / span 3;font-family:var(--ui);font-size:13px;background:#0f2233;color:#e8eef4;border:1px solid #3c6385;border-radius:5px;padding:4px}
+.ctl.wide{grid-template-columns:auto 1fr} .ctl.wide input{grid-column:2}
+.ctl output{font-variant-numeric:tabular-nums;color:#ffd166;text-align:center} .ctl small{color:#8ea6bb}
+#lab-preset{width:100%;font-family:var(--ui);font-size:14px;background:#0f2233;color:#e8eef4;border:1px solid #3c6385;border-radius:5px;padding:6px}
+.hint{display:block;color:#8ea6bb;font-size:12px;margin-top:4px}
+input[type=range]{accent-color:var(--orange);width:100%;direction:ltr}
+[hidden]{display:none!important}
+/* ---------- book ---------- */
+.book{max-width:46em;margin:0 auto;padding:10px 32px;background:var(--sheet);border-inline:1px solid var(--rule)}
+.book h1{font-family:var(--ui);font-size:30px;color:#1f4e79;border-bottom:3px solid var(--blue);padding-bottom:6px;margin:64px 0 18px}
+.book h2{font-family:var(--ui);font-size:23px;color:var(--blue);margin:40px 0 10px}
+.book h3{font-family:var(--ui);font-size:19px;color:#2e6a8e;margin:28px 0 8px}
+.book p{margin:0 0 14px;text-align:justify}
+.book img{max-width:100%;height:auto;display:block;margin:14px auto 4px;border-radius:4px}
+.book blockquote{margin:14px 0;padding:10px 16px;background:#eef5f0;border-inline-start:5px solid var(--green);border-radius:0 4px 4px 0}
+.book blockquote p:last-child{margin-bottom:0}
+math{direction:ltr;font-size:1.05em} math[display=block]{margin:10px 0;overflow-x:auto;overflow-y:hidden}
+.book table{border-collapse:collapse;width:100%;margin:12px 0;font-size:15px;display:block;overflow-x:auto}
+.book th{background:#e3edf5;font-family:var(--ui)} .book td,.book th{border-bottom:1px solid var(--rule);padding:6px 8px;vertical-align:top}
+[data-custom-style="FigCaption"]{text-align:center;color:var(--muted);font-size:15px;margin-bottom:22px}
+[data-custom-style="FigCaption"] p{text-align:center}
+[data-custom-style="NavBar"]{font-family:var(--ui);font-size:13px;color:var(--muted);border-bottom:1px solid var(--rule);margin-bottom:16px}
+[data-custom-style="QLink"]{font-family:var(--ui);font-size:14px;text-align:left} [data-custom-style="QLink"] p{text-align:left}
+[data-custom-style="SolLabel"]{font-family:var(--ui);font-weight:700;color:var(--red)}
+[data-custom-style="SolGroup"]{font-family:var(--ui);font-weight:700;font-size:20px;color:var(--red);border-bottom:2px solid var(--red);margin-top:28px}
+[data-custom-style="GlossLetter"]{font-family:var(--ui);font-weight:700;font-size:24px;color:var(--blue);margin-top:20px}
+[data-custom-style="GlossEntry"] p,[data-custom-style="IndexEntry"] p{text-align:right;margin-bottom:8px}
+[data-custom-style="IndexEntry"]{font-size:15px}
+div.labref{background:#fdf2e8;border-inline-start:5px solid var(--orange);padding:10px 16px;margin:14px 0;border-radius:0 4px 4px 0}
+div.labref p{margin-bottom:6px}
+.labbtn{font-family:var(--ui);font-size:14px;background:var(--orange);color:#1b1206;border:0;border-radius:6px;padding:6px 14px;cursor:pointer;font-weight:700}
+@media (max-width:1100px){
+  #side{transform:translateX(100%);transition:transform .2s;box-shadow:-6px 0 18px rgba(20,40,58,.15)}
+  body.toc-open #side{transform:none}
+  main{margin-right:0}
+  .lab-grid{grid-template-columns:1fr}
+  .lab-controls{max-height:none}
+}
+@media (min-width:1101px){ #toc-toggle{display:none} }
+@media (max-width:600px){ body{font-size:17px} .book{padding:8px 16px} #lab{padding:16px} .lab-stage canvas{height:320px} .brand small{display:none} }
+@media (prefers-reduced-motion:reduce){ #side{transition:none} }
+
+/* ---------- v7: lab layout ---------- */
+.lab-grid{grid-template-columns:minmax(0,1fr)!important;gap:14px}
+.lab-steps{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px;color:#b9c8d6;font-size:14px}
+.lab-steps b{color:#ffd166}
+.lab-stagewrap{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+.lab-viewbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.seg{display:inline-flex;border:1px solid #3c6385;border-radius:7px;overflow:hidden}
+#lab .seg button{border:0;border-radius:0;background:#132c42;padding:6px 12px}
+#lab .seg button[aria-pressed=true]{background:#ffd166;color:#1b1206;font-weight:700}
+.angle{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#cfdae5}
+.angle input{width:110px}
+.lab-tabs{display:flex;gap:2px;border-bottom:1px solid #2a4a66;margin-bottom:8px}
+#lab .lab-tabs [role=tab]{background:none;border:0;border-bottom:3px solid transparent;border-radius:6px 6px 0 0;color:#b9c8d6;padding:8px 10px;font-weight:500}
+#lab .lab-tabs [role=tab][aria-selected=true]{color:#ffd166;border-bottom-color:#ffd166;background:#16314a}
+.lab-controls{max-height:none!important}
+.lab-panel{min-height:300px}
+.lab-panel .tip{color:#9fb6ca;font-size:12.5px;margin:2px 0 8px}
+/* task dock: instructions next to the simulator */
+#lab-task{background:#fdf2e8;color:#2b1a08;border-radius:8px;padding:12px 14px;margin-bottom:12px;border-inline-start:6px solid var(--orange);font-family:var(--read);font-size:16px;line-height:1.6}
+#lab-task h2{font-family:var(--ui);font-size:15px;margin:0 0 6px;color:#8a4a12}
+#lab-task .task-body p{margin:0 0 8px}
+#lab-task .task-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+#lab #lab-task button{background:#fff;color:#2b1a08;border-color:#e0b48a}
+#lab #lab-task button.primary{background:var(--orange);color:#1b1206;border-color:var(--orange)}
+#back-to-text{position:fixed;bottom:22px;left:22px;z-index:30;font-family:var(--ui);font-size:15px;font-weight:700;background:var(--orange);color:#1b1206;border:0;border-radius:24px;padding:10px 18px;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+.flash{animation:flash 2.2s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 6px rgba(224,123,40,.55)}100%{box-shadow:0 0 0 0 rgba(224,123,40,0)}}
+div.labref{cursor:pointer} div.labref:hover{background:#fbe6d2}
+/* ---------- page numbers and position ---------- */
+.pg{float:left;font-family:var(--ui);font-size:12px;font-weight:400;color:var(--muted);background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:1px 8px;margin-top:6px}
+.toc .tp{float:left;color:#8a99a8;font-size:12px;margin-inline-start:6px}
+.toc a.active{color:var(--blue)!important;font-weight:700}
+.toc li.active>details>summary,.toc li.active>a{background:#e8f0f7;border-radius:4px}
+.toc a.active::before{content:"";display:inline-block;width:4px;height:1em;background:var(--orange);margin-inline-end:6px;vertical-align:-2px;border-radius:2px}
+.where{font-size:13px;color:var(--muted);margin-inline-start:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
+.goto{display:inline-flex;gap:4px;align-items:center;font-size:13px;color:var(--muted)}
+.goto input{width:62px;font:inherit;padding:3px 6px;border:1px solid var(--rule);border-radius:5px}
+.goto button,.hwlink{font-family:var(--ui);font-size:13px;border:1px solid var(--rule);background:var(--paper);border-radius:5px;padding:3px 10px;cursor:pointer;text-decoration:none;color:var(--ink)}
+.hwlink{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:500}
+@media (max-width:1250px){.lab-stagewrap{grid-template-columns:1fr}}
+@media (max-width:800px){.where{display:none}.goto{display:none}}
+</style></head><body class="solo"><main>
+<section id="lab" aria-labelledby="lab-title">
+ <div class="lab-head"><h1 id="lab-title">מעבדת המיתר</h1>
+  <p class="lab-steps"><span><b>1</b> בחרו תרחיש</span>·<span><b>2</b> שנו מיתר, קצוות ומקטעים</span>·<span><b>3</b> הוסיפו הפרעה</span>·<span><b>4</b> סובבו את המבט ועקבו</span></p></div>
+ <div class="lab-stagewrap">
+  <div class="lab-stage">
+   <canvas id="lab-canvas" tabindex="0" aria-label="תצוגה תלת־ממדית של המיתר. במצב סיבוב: גרירה או חצי המקלדת; פלוס ומינוס להתקרבות; רווח לעצירה."></canvas>
+   <div class="lab-viewbar">
+    <span class="seg" role="group" aria-label="מצב העכבר"><button type="button" data-mode="rotate">⟲ סיבוב תצוגה</button><button type="button" data-mode="pluck">✚ הפרעה בלחיצה</button></span>
+    <span class="seg" role="group" aria-label="מבט מוכן"><button type="button" data-view="persp">מרחבי</button><button type="button" data-view="front">חזית</button><button type="button" data-view="top">מלמעלה</button><button type="button" data-view="side">צד</button></span>
+    <span class="seg" role="group" aria-label="מרחק"><button type="button" id="lab-zoom-in" aria-label="התקרבות">+</button><button type="button" id="lab-zoom-out" aria-label="התרחקות">−</button></span>
+    <label class="angle" for="lab-yaw">אופקית <input type="range" id="lab-yaw" min="-83" max="83" step="1"><output id="lab-yaw-o"></output></label>
+    <label class="angle" for="lab-pitch">אנכית <input type="range" id="lab-pitch" min="-8" max="77" step="1"><output id="lab-pitch-o"></output></label>
+   </div>
+   <div class="lab-bar">
+    <button id="lab-play" type="button">❚❚ השהיה</button><button id="lab-step" type="button">צעד</button>
+    <button id="lab-reset" type="button">יישור המיתר</button><button id="lab-gain" type="button">התאמת הגדלה</button>
+    <label class="inline" for="lab-wf"><input type="checkbox" id="lab-wf" data-k="waterfall"> מפל זמן</label>
+    <label class="inline" for="lab-speed">קצב <input type="range" id="lab-speed" min="-3.3" max="0.3" step="0.05"><output id="lab-speed-o"></output></label>
+   </div>
+   <p id="lab-energy" class="lab-read" aria-live="polite"></p><p id="lab-msg" class="lab-msg" role="status"></p>
+   <div class="lab-tables"><table id="lab-table"></table><ul id="lab-junctions"></ul></div><p id="lab-note" class="lab-read"></p>
+  </div>
+  <div class="lab-side">
+   <aside id="lab-task" hidden aria-labelledby="lab-task-h"><h2 id="lab-task-h">המשימה מתוך הספר</h2><div class="task-body"></div>
+    <div class="task-actions"><button type="button" class="primary" id="task-back">↩ חזרה למקום בספר</button><button type="button" id="task-close">הסתרת המשימה</button></div></aside>
+   <form class="lab-controls" onsubmit="return false">
+    <div class="lab-tabs" role="tablist" aria-label="הגדרות המעבדה"><button type="button" role="tab" id="tab-scen" aria-controls="panel-scen">תרחיש</button><button type="button" role="tab" id="tab-string" aria-controls="panel-string">מיתר</button><button type="button" role="tab" id="tab-ends" aria-controls="panel-ends">קצוות</button><button type="button" role="tab" id="tab-segs" aria-controls="panel-segs">מקטעים</button><button type="button" role="tab" id="tab-dist" aria-controls="panel-dist">הפרעה</button></div>
+    <div class="lab-panel" role="tabpanel" id="panel-scen" aria-labelledby="tab-scen">
+     <p class="tip">תרחיש מוכן טוען את כל ההגדרות ומוסיף הפרעה מתאימה. אחר כך אפשר לשנות כל פרמטר בלשוניות האחרות.</p>
+     <select id="lab-preset" aria-label="תרחיש מוכן" size="10">
+      <option value="pulse">פולס על מיתר אינסופי</option><option value="pluck">פריטה ומכה (ד׳אלמבר)</option>
+      <option value="hanging">חבל תלוי אנכי</option><option value="driver">מרעיד הרמוני בקצה</option>
+      <option value="junction">צומת בין שני מיתרים</option><option value="termination">סוגי קצה</option>
+      <option value="three">שלושה מיתרים מחוברים</option><option value="standing">גלים עומדים במיתר רתום</option>
+      <option value="fixedpulse">פולס על מיתר רתום</option><option value="damped">גל עומד מרוסן</option></select></div>
+    <div class="lab-panel" role="tabpanel" id="panel-string" aria-labelledby="tab-string" hidden>
+     <label class="ctl" for="lab-type"><span id="lab-type-label">סוג מיתר</span><select id="lab-type" data-k="type"><option value="infinite">אינסופי</option><option value="semi">חצי־אינסופי</option><option value="finite">רתום / סופי</option></select></label>
+     <label class="ctl" for="lab-orient"><span id="lab-orient-label">כיוון</span><select id="lab-orient" data-k="orient"><option value="h">אופקי</option><option value="v">אנכי: חבל תלוי</option></select></label>
+     <label class="ctl" for="lab-L"><span>אורך התחום</span><input type="range" id="lab-L" data-k="L" min="1" max="10" step="0.5"><output for="lab-L"></output><small>m</small></label><div id="lab-tension-row"><label class="ctl" for="lab-T"><span>מתיחות</span><input type="range" id="lab-T" data-k="T" min="1" max="200" step="1"><output for="lab-T"></output><small>N</small></label></div>
+     <label class="ctl" for="lab-damp"><span>ריסון γ</span><input type="range" id="lab-damp" data-k="damp" min="0" max="10" step="0.1"><output for="lab-damp"></output><small>1/s</small></label><p class="tip">במיתר אנכי המתיחות נקבעת מן הכבידה, T(s)=μgs.</p></div>
+    <div class="lab-panel" role="tabpanel" id="panel-ends" aria-labelledby="tab-ends" hidden>
+     <div class="lab-only-left"><label class="ctl" for="lab-left"><span id="lab-left-label">קצה שמאלי</span><select id="lab-left" data-k="left"><option value="fixed">קשור</option><option value="free">חופשי</option><option value="matched">בולם מותאם (ללא החזרה)</option></select></label></div><div class="lab-only-finite"><label class="ctl" for="lab-right"><span id="lab-right-label">קצה ימני</span><select id="lab-right" data-k="right"><option value="fixed">קשור</option><option value="free">חופשי</option><option value="matched">בולם מותאם (ללא החזרה)</option></select></label></div>
+     <p class="tip">במיתר אינסופי שני הקצוות בולעים; בחצי־אינסופי רק הקצה הימני בולע.</p>
+     <label class="inline" for="lab-drv"><input type="checkbox" id="lab-drv" data-k="driver"> מרעיד הרמוני בקצה השמאלי</label>
+     <div class="lab-only-driver"><label class="ctl" for="lab-df"><span>תדר המרעיד</span><input type="range" id="lab-df" data-k="df" min="1" max="80" step="0.5"><output for="lab-df"></output><small>Hz</small></label><label class="ctl" for="lab-dA"><span>אמפליטודה</span><input type="range" id="lab-dA" data-k="dA" min="0.002" max="0.1" step="0.002"><output for="lab-dA"></output><small>m</small></label></div></div>
+    <div class="lab-panel" role="tabpanel" id="panel-segs" aria-labelledby="tab-segs" hidden>
+     <label class="ctl" for="lab-nseg"><span>מספר מקטעים</span><input type="range" id="lab-nseg" data-k="nseg" min="1" max="4" step="1"><output for="lab-nseg"></output><small></small></label><label class="ctl mu" for="lab-mu0"><span>μ מקטע 1</span><input type="range" id="lab-mu0" min="2" max="300" step="1"><output id="lab-mu0-o"></output><small>g/m</small></label><label class="ctl mu" for="lab-mu1"><span>μ מקטע 2</span><input type="range" id="lab-mu1" min="2" max="300" step="1"><output id="lab-mu1-o"></output><small>g/m</small></label><label class="ctl mu" for="lab-mu2"><span>μ מקטע 3</span><input type="range" id="lab-mu2" min="2" max="300" step="1"><output id="lab-mu2-o"></output><small>g/m</small></label><label class="ctl mu" for="lab-mu3"><span>μ מקטע 4</span><input type="range" id="lab-mu3" min="2" max="300" step="1"><output id="lab-mu3-o"></output><small>g/m</small></label><p class="tip">באותה מתיחות, מקטע כבד יותר הוא בעל אימפדנס גבוה יותר; הוא מצויר עבה וכתום.</p></div>
+    <div class="lab-panel" role="tabpanel" id="panel-dist" aria-labelledby="tab-dist" hidden>
+     <label class="ctl" for="lab-dist"><span id="lab-dist-label">צורה</span><select id="lab-dist" data-k="dist"><option value="gauss">פולס גאוסי</option><option value="pick">פיק משולש (פריטה)</option><option value="train">רכבת גל הרמונית</option><option value="mode">אופן עצמי sin(nπx/L)</option><option value="expr">פונקציה לבחירתכם</option></select></label>
+     <label class="ctl" for="lab-dir"><span id="lab-dir-label">תנועה התחלתית</span><select id="lab-dir" data-k="dir"><option value="right">נע לכיוון ‎+x‎ (ימינה / מעלה)</option><option value="left">נע לכיוון ‎−x‎</option><option value="rest">משוחרר ממנוחה</option></select></label>
+     <div data-dist="gauss pick train"><label class="ctl" for="lab-x0"><span>מיקום (חלק מן האורך)</span><input type="range" id="lab-x0" data-k="x0" min="0" max="1" step="0.01"><output for="lab-x0"></output><small></small></label></div>
+     <div data-dist="gauss pick"><label class="ctl" for="lab-w"><span>רוחב (חלק מן האורך)</span><input type="range" id="lab-w" data-k="w" min="0.01" max="0.4" step="0.005"><output for="lab-w"></output><small></small></label></div>
+     <div data-dist="train"><label class="ctl" for="lab-lam"><span>אורך גל (חלק מן האורך)</span><input type="range" id="lab-lam" data-k="lam" min="0.03" max="0.5" step="0.005"><output for="lab-lam"></output><small></small></label><label class="ctl" for="lab-ncyc"><span>מספר מחזורים</span><input type="range" id="lab-ncyc" data-k="ncyc" min="1" max="8" step="1"><output for="lab-ncyc"></output><small></small></label></div>
+     <div data-dist="mode"><label class="ctl" for="lab-mode"><span>מספר האופן n</span><input type="range" id="lab-mode" data-k="mode" min="1" max="8" step="1"><output for="lab-mode"></output><small></small></label></div>
+     <div data-dist="gauss pick train mode"><label class="ctl" for="lab-A"><span>אמפליטודה</span><input type="range" id="lab-A" data-k="A" min="0.005" max="0.3" step="0.005"><output for="lab-A"></output><small>m</small></label></div>
+     <div data-dist="expr"><label class="ctl wide" for="lab-expr"><span>y(x,0) =</span><input type="text" id="lab-expr" data-k="expr" dir="ltr" spellcheck="false"></label>
+      <small class="hint">x במטרים, L אורך התחום; sin, exp, abs, PI זמינים. לדוגמה: 0.02*sin(3*PI*x/L)</small></div>
+     <button id="lab-add" type="button" class="primary">הוספת ההפרעה למיתר</button>
+     <small class="hint">הפרעות מצטרפות זו לזו. אפשר גם לבחור «הפרעה בלחיצה» וללחוץ על המיתר עצמו.</small></div>
+   </form>
+  </div>
+ </div>
+</section></main><script>/* מעבדת המיתר v7 — משוואת הגלים עם מקטעים, קצוות, ריסון, מרעיד ותצוגה תלת־ממדית יציבה */
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const G = 9.8, N = 520;
+  const S = {
+    type: 'finite', left: 'fixed', right: 'fixed', orient: 'h', L: 4, T: 50, nseg: 1,
+    mus: [20, 60, 20, 60], damp: 0, driver: false, df: 20, dA: 0.02,
+    dist: 'gauss', dir: 'right', x0: 0.25, w: 0.05, A: 0.02, lam: 0.15, ncyc: 3, mode: 3,
+    expr: '0.02*exp(-((x-1)/0.1)^2)', speed: 0.02, waterfall: false, gain: 4
+  };
+  let x, mu, Th, y, yp, dx, dt, t = 0, running = true, hist = [], frameNo = 0;
+  // camera: "target" is what the user asks for, "cam" follows it smoothly -> no jumps
+  const VIEWS = { persp: { yaw: -0.5, pitch: 0.35, dist: 4.4 }, front: { yaw: 0, pitch: 0.02, dist: 4.4 },
+                  top: { yaw: 0, pitch: 1.3, dist: 4.6 }, side: { yaw: -1.25, pitch: 0.3, dist: 4.4 } };
+  const tgt = Object.assign({}, VIEWS.persp), cam = Object.assign({}, VIEWS.persp);
+  const LIM = { yaw: 1.45, pitchMin: -0.15, pitchMax: 1.35, dMin: 2.6, dMax: 8 };
+  let mode = 'rotate', hoverIdx = null;
+  const canvas = $('lab-canvas'), ctx = canvas.getContext('2d');
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  // ---------------- model ----------------
+  function segIndex(xi) { return Math.min(S.nseg - 1, Math.floor(xi / S.L * S.nseg)); }
+  function build(keepState) {
+    const old = keepState && y ? y.slice() : null;
+    x = new Float64Array(N); mu = new Float64Array(N); Th = new Float64Array(N - 1); dx = S.L / (N - 1);
+    for (let i = 0; i < N; i++) { x[i] = i * dx; mu[i] = S.mus[segIndex(x[i])] / 1000; }
+    if (S.orient === 'v') {             // hanging rope: s from the lower end (index 0); T = weight of the part below
+      let m = 0; const m0 = 0.02 * mu[0] * S.L;
+      for (let i = 0; i < N - 1; i++) { const dm = 0.5 * (mu[i] + mu[i + 1]) * dx; Th[i] = G * (m0 + m + 0.5 * dm); m += dm; }
+    } else Th.fill(S.T);
+    let vmax = 0;
+    for (let i = 0; i < N - 1; i++) vmax = Math.max(vmax, Math.sqrt(Th[i] / Math.min(mu[i], mu[i + 1])));
+    dt = 0.85 * dx / vmax;
+    y = new Float64Array(N); yp = new Float64Array(N);
+    if (old) { y.set(old); yp.set(old); }
+    readouts();
+  }
+  const speedAt = (i) => Math.sqrt(Th[Math.min(i, N - 2)] / mu[i]);
+  function endKinds() {
+    const m = (k) => (k === 'matched' ? 'absorb' : k);
+    if (S.type === 'infinite') return ['absorb', 'absorb'];
+    if (S.type === 'semi') return [m(S.left), 'absorb'];
+    return [m(S.left), m(S.right)];
+  }
+  function step() {
+    const yn = new Float64Array(N), g = S.damp, a = 1 + g * dt / 2, b = 1 - g * dt / 2, dx2 = dx * dx;
+    for (let i = 1; i < N - 1; i++) {
+      const acc = (Th[i] * (y[i + 1] - y[i]) - Th[i - 1] * (y[i] - y[i - 1])) / (dx2 * mu[i]);
+      yn[i] = (2 * y[i] - b * yp[i] + dt * dt * acc) / a;
+    }
+    const [L, R] = endKinds();
+    const bc = (kind, e, nb, Tn) => {
+      if (kind === 'fixed') yn[e] = 0;
+      else if (kind === 'free') yn[e] = yn[nb];
+      else { const k = Math.sqrt(Tn / mu[e]) * dt / dx; yn[e] = y[nb] + (k - 1) / (k + 1) * (yn[nb] - y[e]); }
+    };
+    bc(L, 0, 1, Th[0]); bc(R, N - 1, N - 2, Th[N - 2]);
+    t += dt;
+    if (S.driver) yn[0] = S.dA * Math.sin(2 * Math.PI * S.df * t);
+    yp = y; y = yn;
+  }
+  function energy() {
+    let K = 0, U = 0;
+    for (let i = 0; i < N; i++) { const v = (y[i] - yp[i]) / dt; K += 0.5 * mu[i] * v * v * dx; }
+    for (let i = 0; i < N - 1; i++) { const s = (y[i + 1] - y[i]) / dx; U += 0.5 * Th[i] * s * s * dx; }
+    return [K, U];
+  }
+
+  // ---------------- disturbances ----------------
+  function shape() {
+    const f = new Float64Array(N), x0 = S.x0 * S.L, w = Math.max(S.w * S.L, 2 * dx), A = S.A;
+    if (S.dist === 'gauss') for (let i = 0; i < N; i++) f[i] = A * Math.exp(-(((x[i] - x0) / w) ** 2));
+    else if (S.dist === 'pick') for (let i = 0; i < N; i++) f[i] = Math.abs(x[i] - x0) < w ? A * (1 - Math.abs(x[i] - x0) / w) : 0;
+    else if (S.dist === 'train') {
+      const lam = S.lam * S.L, half = S.ncyc * lam / 2;
+      for (let i = 0; i < N; i++) { const u = x[i] - x0; if (Math.abs(u) < half) f[i] = A * Math.sin(2 * Math.PI * u / lam) * Math.cos(Math.PI * u / (2 * half)) ** 2; }
+    } else if (S.dist === 'mode') for (let i = 0; i < N; i++) f[i] = A * Math.sin(S.mode * Math.PI * x[i] / S.L);
+    else if (S.dist === 'expr') {
+      let fn;
+      try { fn = new Function('x', 'L', 'with (Math) { return (' + String(S.expr).replace(/\^/g, '**') + '); }'); }
+      catch (e) { msg('הביטוי אינו תקין: ' + e.message); return null; }
+      for (let i = 0; i < N; i++) {
+        let v; try { v = Number(fn(x[i], S.L)); } catch (e) { msg('שגיאה בחישוב הביטוי: ' + e.message); return null; }
+        if (!isFinite(v)) { msg('הביטוי מחזיר ערך לא מוגדר ב־x=' + x[i].toFixed(2)); return null; } f[i] = v;
+      }
+    }
+    return f;
+  }
+  function addDisturbance(at) {
+    if (at !== undefined) S.x0 = at;
+    const f = shape(); if (!f) return;
+    const sgn = S.dir === 'right' ? -1 : S.dir === 'left' ? 1 : 0;
+    for (let i = 0; i < N; i++) {
+      const fx = (f[Math.min(i + 1, N - 1)] - f[Math.max(i - 1, 0)]) / (2 * dx);
+      y[i] += f[i]; yp[i] += f[i] - dt * sgn * speedAt(i) * fx;
+    }
+    const [L, R] = endKinds(); if (L === 'fixed') y[0] = yp[0] = 0; if (R === 'fixed') y[N - 1] = yp[N - 1] = 0;
+    autoGain(); msg(''); syncUI();
+  }
+  function autoGain() { let m = 0; for (let i = 0; i < N; i++) m = Math.max(m, Math.abs(y[i])); if (S.driver) m = Math.max(m, S.dA); S.gain = m > 0 ? 0.5 / m : 4; }
+  function msg(s) { $('lab-msg').textContent = s; }
+
+  // ---------------- readouts ----------------
+  const fmt = (v, d = 2) => Number(v).toFixed(d);
+  function readouts() {
+    const rows = [], Z = [];
+    for (let k = 0; k < S.nseg; k++) {
+      const i = Math.min(N - 1, Math.floor((k + 0.5) / S.nseg * (N - 1))), v = speedAt(i), z = Math.sqrt(Th[Math.min(i, N - 2)] * mu[i]); Z.push(z);
+      rows.push(`<tr><td>${k + 1}</td><td>${S.mus[k]}</td><td>${fmt(v, 1)}</td><td>${fmt(z, 3)}</td></tr>`);
+    }
+    let jn = '';
+    for (let k = 0; k + 1 < S.nseg; k++) {
+      const r = (Z[k] - Z[k + 1]) / (Z[k] + Z[k + 1]), tau = 2 * Z[k] / (Z[k] + Z[k + 1]);
+      jn += `<li>צומת ${k + 1}←→${k + 2}: <b>r=${fmt(r)}</b>, τ=${fmt(tau)}</li>`;
+    }
+    const [L, R] = endKinds(), rEnd = (k) => (k === 'fixed' ? '−1' : k === 'free' ? '+1' : '0');
+    const lname = S.orient === 'v' ? 'תחתון' : 'שמאלי', rname = S.orient === 'v' ? 'עליון' : 'ימני';
+    jn += `<li>קצה ${lname}: ${S.driver ? 'מרעיד' : 'r=' + rEnd(L)}</li><li>קצה ${rname}: r=${rEnd(R)}</li>`;
+    $('lab-table').innerHTML = `<thead><tr><th>מקטע</th><th>μ (g/m)</th><th>v (m/s)</th><th>Z (kg/s)</th></tr></thead><tbody>${rows.join('')}</tbody>`;
+    $('lab-junctions').innerHTML = jn;
+    $('lab-note').textContent = S.orient === 'v' ? 'חבל תלוי: המתיחות גדלה עם הגובה, T(s)≈μgs; המהירות בטבלה נמדדת באמצע המקטע.' : '';
+  }
+
+  // ---------------- 3D view ----------------
+  function proj(p, W, H) {
+    const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch);
+    const X = cy * p[0] + sy * p[2], Z = -sy * p[0] + cy * p[2], Y = p[1];
+    const Y2 = cp * Y - sp * Z, Z2 = sp * Y + cp * Z;
+    const f = cam.dist / (cam.dist + Z2), s = Math.min(W, H * 1.7) * 0.29;
+    return [W / 2 + X * f * s, H * 0.52 - Y2 * f * s, f];
+  }
+  const world = (u, v, z) => (S.orient === 'v' ? [v, u * 0.5, z] : [u, v, z]);
+  let lastScreen = [];
+  function draw() {
+    const dpr = window.devicePixelRatio || 1, W = canvas.clientWidth, H = canvas.clientHeight;
+    if (!W || !H) return;
+    if (canvas.width !== Math.round(W * dpr) || canvas.height !== Math.round(H * dpr)) { canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    const C = { grid: '#22405a', axis: '#7f9bb3', str: '#ffd166', heavy: '#f28c28', wall: 'rgba(201,214,226,0.22)', wallEdge: '#c9d6e2', text: '#b9c8d6' };
+    const path = (pts) => { ctx.beginPath(); pts.forEach((p, i) => { const q = proj(p, W, H); i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); }); };
+    const line = (pts, col, wdt, dash, alpha = 1) => { ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = col; ctx.lineWidth = wdt; ctx.setLineDash(dash || []); path(pts); ctx.stroke(); ctx.restore(); };
+    const quad = (pts, fill, edge) => { ctx.save(); path(pts); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); ctx.strokeStyle = edge; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore(); };
+    const label = (p, txt, col, align = 'center') => { const q = proj(p, W, H); ctx.fillStyle = col; ctx.font = '12px Heebo, Arial, sans-serif'; ctx.textAlign = align; ctx.fillText(txt, q[0], q[1]); };
+    // floor
+    const fy = -0.75;
+    for (let k = -4; k <= 4; k++) { line([world(k * 0.4, fy, -1), world(k * 0.4, fy, 1)], C.grid, 1); }
+    for (let k = -3; k <= 3; k++) { line([world(-1.6, fy, k * 0.33), world(1.6, fy, k * 0.33)], C.grid, 1); }
+    const U = (i) => (x[i] / S.L - 0.5) * 3.2;
+    line([world(-1.6, 0, 0), world(1.6, 0, 0)], C.axis, 1, [5, 5], 0.8);
+    for (let k = 1; k < S.nseg; k++) { const u = (k / S.nseg - 0.5) * 3.2; line([world(u, -0.55, 0), world(u, 0.55, 0)], C.axis, 1, [2, 4], 0.8); }
+    // ends: translucent wall, ring on a rod, dashpot, or a fading continuation
+    const [L, R] = endKinds();
+    const end = (kind, u, isLeft) => {
+      const out = isLeft ? -1 : 1;
+      if (S.driver && isLeft) { line([world(u, -0.3, 0), world(u, 0.3, 0)], '#7fd1ae', 6); label(world(u, 0.42, 0), 'מרעיד', '#7fd1ae'); return; }
+      if (kind === 'fixed') { quad([world(u, -0.55, -0.35), world(u, 0.55, -0.35), world(u, 0.55, 0.35), world(u, -0.55, 0.35)], C.wall, C.wallEdge); label(world(u, 0.68, 0), 'קשור', C.text); }
+      else if (kind === 'free') { line([world(u, -0.6, 0), world(u, 0.6, 0)], C.wallEdge, 2.5, null, 0.8); label(world(u, 0.72, 0), 'חופשי', C.text); }
+      else if (S.type === 'finite' || (S.type === 'semi' && isLeft)) {
+        line([world(u, 0, 0), world(u + out * 0.12, 0, 0)], '#e07b28', 2); quad([world(u + out * 0.12, -0.08, 0), world(u + out * 0.12, 0.08, 0), world(u + out * 0.3, 0.08, 0), world(u + out * 0.3, -0.08, 0)], 'rgba(224,123,40,0.35)', '#e07b28');
+        label(world(u + out * 0.2, 0.22, 0), 'בולם', '#f2a35a');
+      } else { line([world(u, 0, 0), world(u + out * 0.35, 0, 0)], C.str, 2, [2, 5], 0.5); label(world(u + out * 0.2, 0.18, 0), '∞', C.text); }
+    };
+    end(L, -1.6, true); end(R, 1.6, false);
+    if (S.waterfall) hist.forEach((h, k) => {
+      const z = -(hist.length - k) * 0.04, pts = []; for (let i = 0; i < N; i += 4) pts.push(world(U(i), h[i] * S.gain, z));
+      line(pts, C.axis, 1, null, 0.12 + 0.55 * k / hist.length);
+    });
+    lastScreen = [];
+    const minMu = Math.min(...S.mus.slice(0, S.nseg));
+    for (let k = 0; k < S.nseg; k++) {
+      const pts = [], i0 = Math.floor(k / S.nseg * (N - 1)), i1 = Math.floor((k + 1) / S.nseg * (N - 1));
+      for (let i = i0; i <= i1; i++) pts.push(world(U(i), y[i] * S.gain, 0));
+      line(pts, S.mus[k] > minMu + 1e-9 ? C.heavy : C.str, 2 + Math.min(4, 2 * Math.sqrt(S.mus[k] / minMu)));
+    }
+    for (let i = 0; i < N; i += 2) lastScreen.push([i, proj(world(U(i), y[i] * S.gain, 0), W, H)]);
+    if (mode === 'pluck' && hoverIdx !== null) {
+      const q = proj(world(U(hoverIdx), y[hoverIdx] * S.gain, 0), W, H);
+      ctx.save(); ctx.strokeStyle = '#7fd1ae'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(q[0], q[1], 9, 0, 2 * Math.PI); ctx.stroke(); ctx.restore();
+    }
+    ctx.fillStyle = C.text; ctx.font = '12px Heebo, Arial, sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(`t = ${(t * 1000).toFixed(1)} ms   |   הגדלת העתק ×${S.gain.toFixed(1)}`, 12, H - 12);
+    ctx.textAlign = 'right';
+    ctx.fillText(mode === 'rotate' ? 'מצב סיבוב: גררו כדי לסובב' : 'מצב הפרעה: לחצו על המיתר', W - 12, H - 12);
+  }
+
+  // ---------------- loop ----------------
+  let lastT = performance.now();
+  function loop(now) {
+    const real = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+    const a = 1 - Math.exp(-real * 12);   // smooth, frame-rate independent camera follow
+    cam.yaw += (tgt.yaw - cam.yaw) * a; cam.pitch += (tgt.pitch - cam.pitch) * a; cam.dist += (tgt.dist - cam.dist) * a;
+    if (running) {
+      const n = Math.min(3000, Math.ceil(real * S.speed / dt));
+      for (let k = 0; k < n; k++) step();
+      if (++frameNo % 3 === 0) { hist.push(Float64Array.from(y)); if (hist.length > 60) hist.shift(); }
+      if (frameNo % 10 === 0) {
+        const [K, U] = energy();
+        $('lab-energy').textContent = `אנרגיה: קינטית ${(K * 1000).toFixed(3)} mJ · פוטנציאלית ${(U * 1000).toFixed(3)} mJ · סה״כ ${((K + U) * 1000).toFixed(3)} mJ`;
+      }
+    }
+    draw(); requestAnimationFrame(loop);
+  }
+
+  // ---------------- UI ----------------
+  function setView(name) { Object.assign(tgt, VIEWS[name]); syncAngles(); }
+  function syncAngles() {
+    $('lab-yaw').value = Math.round(tgt.yaw * 180 / Math.PI); $('lab-pitch').value = Math.round(tgt.pitch * 180 / Math.PI);
+    $('lab-yaw-o').textContent = $('lab-yaw').value + '°'; $('lab-pitch-o').textContent = $('lab-pitch').value + '°';
+  }
+  function setMode(m) {
+    mode = m; hoverIdx = null;
+    document.querySelectorAll('[data-mode]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+    canvas.style.cursor = m === 'rotate' ? 'grab' : 'crosshair';
+  }
+  function syncUI() {
+    document.querySelectorAll('[data-k]').forEach((el) => {
+      const k = el.dataset.k; if (!(k in S)) return;
+      if (el.type === 'checkbox') el.checked = !!S[k]; else el.value = S[k];
+      const out = document.querySelector(`output[for="${el.id}"]`); if (out) out.textContent = el.value;
+    });
+    for (let k = 0; k < 4; k++) { const el = $('lab-mu' + k); el.value = S.mus[k]; el.closest('.mu').hidden = k >= S.nseg; $('lab-mu' + k + '-o').textContent = S.mus[k]; }
+    $('lab-speed').value = Math.log10(S.speed); $('lab-speed-o').textContent = '×' + S.speed.toPrecision(2);
+    document.querySelectorAll('.lab-only-finite').forEach((e) => (e.hidden = S.type !== 'finite'));
+    document.querySelectorAll('.lab-only-left').forEach((e) => (e.hidden = S.type === 'infinite'));
+    document.querySelectorAll('[data-dist]').forEach((e) => (e.hidden = !e.dataset.dist.split(' ').includes(S.dist)));
+    document.querySelectorAll('.lab-only-driver').forEach((e) => (e.hidden = !S.driver));
+    $('lab-tension-row').hidden = S.orient === 'v';
+    $('lab-left-label').textContent = S.orient === 'v' ? 'קצה תחתון' : 'קצה שמאלי';
+    $('lab-right-label').textContent = S.orient === 'v' ? 'קצה עליון' : 'קצה ימני';
+    $('lab-play').textContent = running ? '❚❚ השהיה' : '▶ הפעלה';
+    $('lab-play').setAttribute('aria-pressed', String(!running));
+  }
+  function recommendSpeed() { let tt = 0; for (let i = 0; i < N - 1; i++) tt += dx / speedAt(i); S.speed = clamp(tt / 6, 0.0005, 2); }
+  function tabs() {
+    const tl = document.querySelectorAll('.lab-tabs [role=tab]');
+    const show = (btn) => {
+      tl.forEach((b) => { const on = b === btn; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; $(b.getAttribute('aria-controls')).hidden = !on; });
+    };
+    tl.forEach((b, i) => {
+      b.addEventListener('click', () => show(b));
+      b.addEventListener('keydown', (e) => {
+        const d = e.key === 'ArrowLeft' ? 1 : e.key === 'ArrowRight' ? -1 : 0;   // RTL: left = next
+        if (d) { const nb = tl[(i + d + tl.length) % tl.length]; show(nb); nb.focus(); e.preventDefault(); }
+      });
+    });
+    show(tl[0]);
+  }
+  function bind() {
+    document.querySelectorAll('[data-k]').forEach((el) => {
+      el.addEventListener(el.tagName === 'SELECT' || el.type === 'checkbox' ? 'change' : 'input', () => {
+        const k = el.dataset.k; let v = el.type === 'checkbox' ? el.checked : el.value;
+        if (el.type === 'range' || el.type === 'number') v = parseFloat(v);
+        S[k] = v;
+        if (['type', 'left', 'right', 'orient', 'L', 'T', 'nseg'].includes(k)) { build(true); if (['orient', 'L', 'T'].includes(k)) recommendSpeed(); }
+        if (k === 'driver' && v) autoGain();
+        readouts(); syncUI();
+      });
+    });
+    for (let k = 0; k < 4; k++) $('lab-mu' + k).addEventListener('input', (e) => { S.mus[k] = parseFloat(e.target.value); build(true); readouts(); syncUI(); });
+    $('lab-speed').addEventListener('input', (e) => { S.speed = 10 ** parseFloat(e.target.value); syncUI(); });
+    $('lab-add').onclick = () => addDisturbance();
+    $('lab-reset').onclick = () => { y.fill(0); yp.fill(0); t = 0; hist = []; msg(''); };
+    $('lab-play').onclick = () => { running = !running; syncUI(); };
+    $('lab-step').onclick = () => { running = false; for (let k = 0; k < 40; k++) step(); syncUI(); };
+    $('lab-gain').onclick = () => autoGain();
+    $('lab-zoom-in').onclick = () => { tgt.dist = clamp(tgt.dist * 0.88, LIM.dMin, LIM.dMax); };
+    $('lab-zoom-out').onclick = () => { tgt.dist = clamp(tgt.dist * 1.12, LIM.dMin, LIM.dMax); };
+    document.querySelectorAll('[data-view]').forEach((b) => (b.onclick = () => setView(b.dataset.view)));
+    document.querySelectorAll('[data-mode]').forEach((b) => (b.onclick = () => setMode(b.dataset.mode)));
+    $('lab-yaw').addEventListener('input', (e) => { tgt.yaw = clamp(e.target.value * Math.PI / 180, -LIM.yaw, LIM.yaw); syncAngles(); });
+    $('lab-pitch').addEventListener('input', (e) => { tgt.pitch = clamp(e.target.value * Math.PI / 180, LIM.pitchMin, LIM.pitchMax); syncAngles(); });
+    $('lab-preset').addEventListener('change', (e) => loadPreset(e.target.value));
+    // pointer: rotate mode drags the view (incremental, clamped, smoothed); pluck mode adds a disturbance
+    let drag = null;
+    const nearest = (e) => {
+      const r = canvas.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top; let best = null, bd = 1e9;
+      lastScreen.forEach(([i, q]) => { const d = Math.hypot(q[0] - px, q[1] - py); if (d < bd) { bd = d; best = i; } });
+      return bd < 36 ? best : null;
+    };
+    canvas.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      if (mode === 'pluck') { const i = nearest(e); if (i !== null) addDisturbance(x[i] / S.L); return; }
+      drag = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); canvas.style.cursor = 'grabbing';
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      if (mode === 'pluck') { hoverIdx = nearest(e); return; }
+      if (!drag) return;
+      const ddx = e.clientX - drag.x, ddy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY;
+      tgt.yaw = clamp(tgt.yaw + ddx * 0.004, -LIM.yaw, LIM.yaw);
+      tgt.pitch = clamp(tgt.pitch + ddy * 0.004, LIM.pitchMin, LIM.pitchMax); syncAngles();
+    });
+    const endDrag = (e) => { if (drag) { drag = null; canvas.style.cursor = mode === 'rotate' ? 'grab' : 'crosshair'; try { canvas.releasePointerCapture(e.pointerId); } catch (_) {} } };
+    canvas.addEventListener('pointerup', endDrag); canvas.addEventListener('pointercancel', endDrag);
+    canvas.addEventListener('pointerleave', () => { hoverIdx = null; });
+    canvas.addEventListener('wheel', (e) => {   // page scroll stays normal; Ctrl+wheel zooms
+      if (!e.ctrlKey) return; e.preventDefault(); tgt.dist = clamp(tgt.dist * (e.deltaY > 0 ? 1.08 : 0.93), LIM.dMin, LIM.dMax);
+    }, { passive: false });
+    canvas.addEventListener('keydown', (e) => {
+      const d = { ArrowLeft: [-0.08, 0], ArrowRight: [0.08, 0], ArrowUp: [0, 0.08], ArrowDown: [0, -0.08] }[e.key];
+      if (d) { tgt.yaw = clamp(tgt.yaw + d[0], -LIM.yaw, LIM.yaw); tgt.pitch = clamp(tgt.pitch + d[1], LIM.pitchMin, LIM.pitchMax); syncAngles(); e.preventDefault(); }
+      if (e.key === '+') tgt.dist = clamp(tgt.dist * 0.9, LIM.dMin, LIM.dMax);
+      if (e.key === '-') tgt.dist = clamp(tgt.dist * 1.1, LIM.dMin, LIM.dMax);
+      if (e.key === ' ') { running = !running; syncUI(); e.preventDefault(); }
+    });
+  }
+  const P = (o) => Object.assign({ type: 'finite', orient: 'h', left: 'fixed', right: 'fixed', nseg: 1, mus: [20, 60, 20, 60], T: 50, L: 4, damp: 0, driver: false,
+    dist: 'gauss', dir: 'right', x0: 0.2, w: 0.04, A: 0.02, mode: 3 }, o);
+  const PRESETS = {
+    pulse: P({ type: 'infinite' }),
+    pluck: P({ type: 'infinite', dist: 'pick', dir: 'rest', x0: 0.5, w: 0.08 }),
+    hanging: P({ orient: 'v', left: 'free', right: 'fixed', mus: [50, 60, 20, 60], L: 3, x0: 0.15, w: 0.035, A: 0.05 }),
+    driver: P({ type: 'semi', driver: true, df: 25, dA: 0.02 }),
+    junction: P({ type: 'infinite', nseg: 2, mus: [20, 180, 20, 60], w: 0.035 }),
+    termination: P({ left: 'matched', right: 'fixed', x0: 0.25 }),
+    three: P({ type: 'infinite', nseg: 3, mus: [20, 80, 20, 60], L: 6, x0: 0.12, w: 0.025 }),
+    standing: P({ dist: 'mode', dir: 'rest', mode: 3, A: 0.01 }),
+    fixedpulse: P({ dir: 'rest', x0: 0.3 }),
+    damped: P({ damp: 4, dist: 'mode', dir: 'rest', mode: 2, A: 0.01 }),
+  };
+  function loadPreset(name) {
+    const p = PRESETS[name]; if (!p) return;
+    Object.assign(S, JSON.parse(JSON.stringify(p))); $('lab-preset').value = name;
+    build(false); t = 0; hist = []; recommendSpeed(); running = true;
+    if (!S.driver) addDisturbance(); else autoGain();
+    readouts(); syncUI();
+  }
+  window.WaveLab = { loadPreset, setView };
+  tabs(); bind(); setMode('rotate'); syncAngles(); build(false); loadPreset('pulse'); requestAnimationFrame(loop);
+})();
+</script></body></html>
