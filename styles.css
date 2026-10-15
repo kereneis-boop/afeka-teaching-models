@@ -541,3 +541,25 @@ blockquote::before { content: "”"; position: absolute; inset-inline-start: 16p
 /* Minor distinction: models written from pilot materials (no model card) */
 .src-note { color: var(--text-2); font-weight: 400; opacity: .85; white-space: nowrap; }
 .src-line { margin-top: 6px; font-size: 14px; color: var(--text-2); }
+
+/* ---------- showcase: live preview of a hosted tool ---------- */
+.showcase { margin-block: 28px 8px; margin-inline: -4px; border-radius: 28px; overflow: hidden; background: #0F2233; color: #fff; box-shadow: var(--shadow); display: grid; }
+@media (min-width: 768px) { .showcase { margin-inline: -32px; } }
+.sc-text { padding: 24px 20px 20px; }
+@media (min-width: 768px) { .sc-text { padding: 30px 32px 24px; } }
+.sc-kicker { margin: 0 0 4px; font-size: 14px; font-weight: 700; color: #F2C14E; letter-spacing: .02em; }
+.showcase h2 { color: #fff; margin: 0 0 8px; }
+.showcase p { color: #C9D6E2; margin: 0; max-width: 62ch; }
+.sc-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.showcase .sc-open { background: #F2C14E; color: #0F2233; border-color: #F2C14E; text-decoration: none; }
+.showcase .sc-open:hover { background: #FFD46B; }
+.showcase .sc-more { color: #fff; border-color: rgba(255,255,255,.4); background: transparent; text-decoration: none; }
+.showcase .sc-more:hover { border-color: #fff; }
+.sc-frame { position: relative; display: block; height: 320px; overflow: hidden; border-top: 1px solid rgba(255,255,255,.08); cursor: pointer; }
+.sc-frame iframe { position: absolute; inset-block-start: -130px; inset-inline-start: 0; width: 100%; height: 900px; border: 0; pointer-events: none; }
+@media (min-width: 768px) { .sc-frame { height: 440px; } .sc-frame iframe { inset-block-start: -104px; } }
+.sc-frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 70%, rgba(15,34,51,.85)); transition: background .2s; }
+.sc-frame:hover::after { background: linear-gradient(to bottom, rgba(242,193,78,.06), rgba(15,34,51,.7)); }
+.sc-frame:focus-visible { outline: 3px solid #F2C14E; outline-offset: -3px; }
+.sc-badge { position: absolute; z-index: 1; inset-block-start: 14px; inset-inline-end: 14px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgba(15,34,51,.75); color: #fff; font-size: 13px; font-weight: 700; }
+.sc-badge::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #F2C14E; }

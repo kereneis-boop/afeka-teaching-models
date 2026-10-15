@@ -288,6 +288,29 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   }
 
+  // Optional showcase: a live, non-interactive preview of a hosted tool, with a clear way to open it.
+  function showcaseSection(m) {
+    var c = m.showcase;
+    if (!c) return '';
+    return '<section class="showcase no-print" aria-labelledby="showcase-h">' +
+      '<div class="sc-text">' +
+        '<p class="sc-kicker">' + txt(c.kicker) + '</p>' +
+        '<h2 id="showcase-h">' + txt(c.title) + '</h2>' +
+        '<p>' + txt(c.text) + '</p>' +
+        '<div class="sc-actions">' +
+          '<a class="pill sc-open" href="' + esc(c.url) + '" target="_blank" rel="noopener">' + txt(c.cta) + ' ' + ICON_OUT + '<span class="sr-only"> (נפתח בלשונית חדשה)</span></a>' +
+          (c.more || []).map(function (l) {
+            return '<a class="pill pill-ghost sc-more" href="' + esc(l.url) + '" target="_blank" rel="noopener">' + txt(l.label) + ' ' + ICON_OUT + '<span class="sr-only"> (נפתח בלשונית חדשה)</span></a>';
+          }).join('') +
+        '</div>' +
+      '</div>' +
+      '<a class="sc-frame" href="' + esc(c.url) + '" target="_blank" rel="noopener" aria-label="' + esc(c.cta) + ' (נפתח בלשונית חדשה)">' +
+        '<iframe src="' + esc(c.url) + '" title="' + esc(c.title) + ', תצוגה מקדימה" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>' +
+        '<span class="sc-badge">תצוגה חיה</span>' +
+      '</a>' +
+    '</section>';
+  }
+
   function renderModel(id) {
     var idx = -1;
     MODELS.forEach(function (m, i) { if (m.id === id) idx = i; });
@@ -316,6 +339,8 @@
         // Minor note: this model was written from the pilot materials, not from a model card the lecturer filled in.
         (m.source === 'works' ? '<p class="src-line">נכתב מתוך חומרי הפיילוט של המרצה (מערך שיעור ורפלקציה), ולא מכרטיס דגם.</p>' : '') +
         '<p class="lead">' + txt(m.summary) + '</p>' +
+
+        showcaseSection(m) +
 
         '<section class="glance" aria-labelledby="glance-h"><h2 id="glance-h" class="sr-only">הדגם בקצרה</h2>' +
           '<div class="g-grid">' +
